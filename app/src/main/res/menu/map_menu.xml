@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/map_type_none"
+        android:title="MAP_TYPE_NONE"/>
+    <item
+        android:id="@+id/default_map"
+        android:title="Default Map"/>
+    <item
+        android:id="@+id/silver_map"
+        android:title="Silver Map"/>
+    <item
+        android:id="@+id/retro_map"
+        android:title="Retro Map"/>
+</menu>
