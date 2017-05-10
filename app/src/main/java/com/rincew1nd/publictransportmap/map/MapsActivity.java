@@ -1,40 +1,46 @@
 package com.rincew1nd.publictransportmap.map;
 
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.maps.model.RoundCap;
 import com.rincew1nd.publictransportmap.MarkersNodes.MapMarkerManager;
 import com.rincew1nd.publictransportmap.MarkersNodes.MarkerInfoWindowAdapter;
 import com.rincew1nd.publictransportmap.Models.Node;
 import com.rincew1nd.publictransportmap.Models.Path;
 import com.rincew1nd.publictransportmap.R;
+import com.rincew1nd.publictransportmap.ShortPath.ShortPathManager;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Hashtable;
 
 public class MapsActivity extends FragmentActivity implements
-        OnCameraIdleListener,
-        OnMapReadyCallback {
+    OnCameraIdleListener,
+    GoogleMap.OnMarkerClickListener,
+    OnMapReadyCallback{
 
     private GoogleMap mMap;
-    private HashMap<Node, Marker> _markersById;
+    private MapMarkerManager _markerManager;
     private float lastZoom;
+    private boolean fromButtonClick;
+    private boolean toButtonClick;
+    private int fromNodeId;
+    private int toNodeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +49,52 @@ public class MapsActivity extends FragmentActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        _markersById = new HashMap<>();
+
+        final Button fromNodeButton = (Button) findViewById(R.id.from_node_button);
+        final Button toNodeButton = (Button) findViewById(R.id.to_node_button);
+        final TextView resultTimeView = (TextView)findViewById(R.id.total_route_time);
+        Button calculateButton = (Button) findViewById(R.id.calculate_button);
+        Button closeResultButton = (Button) findViewById(R.id.close_total_route_time);
+
+        fromNodeButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                fromButtonClick = !fromButtonClick;
+                toButtonClick = false;
+                toNodeButton.setBackgroundColor(Color.parseColor((toButtonClick) ?
+                        "#76778b" : "#b1b7ff"));
+                fromNodeButton.setBackgroundColor(Color.parseColor((fromButtonClick) ?
+                        "#76778b" : "#b1b7ff"));
+            }
+        });
+        toNodeButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                fromButtonClick = false;
+                toButtonClick = !toButtonClick;
+                toNodeButton.setBackgroundColor(Color.parseColor((toButtonClick) ?
+                        "#76778b" : "#b1b7ff"));
+                fromNodeButton.setBackgroundColor(Color.parseColor((fromButtonClick) ?
+                        "#76778b" : "#b1b7ff"));
+            }
+        });
+        calculateButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                if (fromNodeId != 0 && toNodeId != 0)
+                {
+                    Hashtable<ArrayList<Integer>, Integer> shortestPath =
+                            ShortPathManager.GetInstance().FindShortPath(fromNodeId, toNodeId);
+                    _markerManager.HighlightRoute(shortestPath.entrySet().iterator().next().getKey());
+                    int totaltime = shortestPath.entrySet().iterator().next().getValue();
+                    resultTimeView.setText(String.format("Время поездки %d минут %d секунд",
+                            totaltime / 60, totaltime % 60));
+                    findViewById(R.id.total_route_time_layout).setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        closeResultButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                findViewById(R.id.total_route_time_layout).setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
@@ -88,38 +139,12 @@ public class MapsActivity extends FragmentActivity implements
 
         // Add idle camera listener
         mMap.setOnCameraIdleListener(this);
+        mMap.setOnMarkerClickListener(this);
 
         // Create marker manager
-        MapMarkerManager markerManager = new MapMarkerManager(this);
-        markerManager.LoadMarkers();
-
-        // Place markers on map
-        for (Node marker: markerManager._markers.Nodes) {
-            MarkerOptions markerOptions = new MarkerOptions()
-                .title(marker.Name)
-                .icon(BitmapDescriptorFactory.fromBitmap(marker.icon))
-                .position(new LatLng(marker.Latitude, marker.Longtitude))
-                .anchor(0.08f, 0.5f);
-            Marker mapMarker = mMap.addMarker(markerOptions);
-
-            _markersById.put(marker, mapMarker);
-        }
-
-        // Draw paths on map
-        for (Path path: markerManager._markers.Paths)
-        {
-            Node fromNode = markerManager.GetNode(path.FromNode);
-            Node toNode = markerManager.GetNode(path.ToNode);
-            int width = path.RouteId == -1 ? 30 : 10;
-            PolylineOptions polylineOptions = new PolylineOptions()
-                .add(new LatLng(fromNode.Latitude, fromNode.Longtitude))
-                .add(new LatLng(toNode.Latitude, toNode.Longtitude))
-                .width(width)
-                .startCap(new RoundCap())
-                .endCap(new RoundCap())
-                .color(Color.parseColor(path.Color));
-            mMap.addPolyline(polylineOptions);
-        }
+        _markerManager = MapMarkerManager.GetInstance().SetCotext(this);
+        _markerManager.LoadMarkers();
+        _markerManager.SetUpMarkersAndPaths(mMap);
 
         // Move camera to center of Moscow
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(55.748700, 37.617365), 10));
@@ -130,20 +155,25 @@ public class MapsActivity extends FragmentActivity implements
         if (lastZoom != mMap.getCameraPosition().zoom)
         {
             lastZoom = mMap.getCameraPosition().zoom;
-
-            float markerSize = lastZoom*lastZoom / 400;
-            for(Map.Entry<Node, Marker> entry : _markersById.entrySet()) {
-                Node marker = entry.getKey();
-                Marker mapMarker = entry.getValue();
-
-                Bitmap scaledIcon = Bitmap.createScaledBitmap(
-                        marker.icon,
-                        (int)(marker.icon.getWidth()*markerSize),
-                        (int)(marker.icon.getHeight()*markerSize),
-                        true);
-                mapMarker.setIcon(BitmapDescriptorFactory.fromBitmap(scaledIcon));
-            }
+            _markerManager.UpdateMarkers(lastZoom);
         }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        if (toButtonClick)
+        {
+            Button toNodeButton = (Button) findViewById(R.id.to_node_button);
+            toNodeButton.setText(marker.getTitle());
+            toNodeId = (int)marker.getTag();
+        } else if (fromButtonClick)
+        {
+            Button fromNodeButton = (Button) findViewById(R.id.from_node_button);
+            fromNodeButton.setText(marker.getTitle());
+            fromNodeId = (int)marker.getTag();
+        }
+        Toast.makeText(this, marker.getTitle(), 10).show();
+        return false;
     }
 
     // TODO Move to Utils

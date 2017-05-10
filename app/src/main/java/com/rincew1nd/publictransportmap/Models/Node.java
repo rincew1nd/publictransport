@@ -2,6 +2,8 @@ package com.rincew1nd.publictransportmap.Models;
 
 import android.graphics.Bitmap;
 
+import com.google.android.gms.maps.model.Marker;
+
 public class Node
 {
     public int Id;
@@ -10,5 +12,6 @@ public class Node
     public float Longtitude;
     public int RouteId;
     public String WikiPage;
-    public Bitmap icon;
+    public Bitmap Icon;
+    public Marker Marker;
 }

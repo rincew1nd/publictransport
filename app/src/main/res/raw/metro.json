@@ -1949,84 +1949,280 @@
     {
       "Id":8,
       "Name":"Калининская",
+      "Delay":[
+        {
+          "Time":570,
+          "Seconds":180
+        },
+        {
+          "Time":1020,
+          "Seconds":120
+        },
+        {
+          "Time":1320,
+          "Seconds":360
+        }
+      ],
       "WikiPage":null,
       "Color":"FFCD1C"
     },
     {
       "Id":2,
       "Name":"Замоскворецкая",
+      "Delay":[
+        {
+          "Time":570,
+          "Seconds":120
+        },
+        {
+          "Time":1020,
+          "Seconds":120
+        },
+        {
+          "Time":1320,
+          "Seconds":360
+        }
+      ],
       "WikiPage":null,
       "Color":"4FB04F"
     },
     {
       "Id":6,
       "Name":"Калужско-Рижская",
+      "Delay":[
+        {
+          "Time":570,
+          "Seconds":120
+        },
+        {
+          "Time":1020,
+          "Seconds":89
+        },
+        {
+          "Time":1320,
+          "Seconds":360
+        }
+      ],
       "WikiPage":null,
       "Color":"F07E24"
     },
     {
       "Id":1,
       "Name":"Сокольническая",
+      "Delay":[
+        {
+          "Time":570,
+          "Seconds":120
+        },
+        {
+          "Time":1020,
+          "Seconds":89
+        },
+        {
+          "Time":1320,
+          "Seconds":360
+        }
+      ],
       "WikiPage":null,
       "Color":"E42313"
     },
     {
       "Id":3,
       "Name":"Арбатско-Покровская",
+      "Delay":[
+        {
+          "Time":570,
+          "Seconds":180
+        },
+        {
+          "Time":1020,
+          "Seconds":120
+        },
+        {
+          "Time":1320,
+          "Seconds":300
+        }
+      ],
       "WikiPage":null,
       "Color":"0072BA"
     },
     {
       "Id":4,
       "Name":"Филевская",
+      "Delay":[
+        {
+          "Time":570,
+          "Seconds":180
+        },
+        {
+          "Time":1020,
+          "Seconds":120
+        },
+        {
+          "Time":1320,
+          "Seconds":360
+        }
+      ],
       "WikiPage":null,
       "Color":"1EBCEF"
     },
     {
       "Id":9,
       "Name":"Серпуховско-Тимирязевская",
+      "Delay":[
+        {
+          "Time":570,
+          "Seconds":180
+        },
+        {
+          "Time":1020,
+          "Seconds":120
+        },
+        {
+          "Time":1320,
+          "Seconds":360
+        }
+      ],
       "WikiPage":null,
       "Color":"ADACAC"
     },
     {
       "Id":7,
       "Name":"Таганско-Краснопресненская",
+      "Delay":[
+        {
+          "Time":570,
+          "Seconds":180
+        },
+        {
+          "Time":1020,
+          "Seconds":60
+        },
+        {
+          "Time":1320,
+          "Seconds":300
+        }
+      ],
       "WikiPage":null,
       "Color":"943E90"
     },
     {
       "Id":5,
       "Name":"Кольцевая",
+      "Delay":[
+        {
+          "Time":570,
+          "Seconds":120
+        },
+        {
+          "Time":1020,
+          "Seconds":60
+        },
+        {
+          "Time":1320,
+          "Seconds":300
+        }
+      ],
       "WikiPage":null,
       "Color":"915133"
     },
     {
       "Id":10,
       "Name":"Люблинско-Дмитровская",
+      "Delay":[
+        {
+          "Time":570,
+          "Seconds":120
+        },
+        {
+          "Time":1020,
+          "Seconds":120
+        },
+        {
+          "Time":1320,
+          "Seconds":360
+        }
+      ],
       "WikiPage":null,
       "Color":"BED12C"
     },
     {
       "Id":11,
       "Name":"Каховская",
+      "Delay":[
+        {
+          "Time":570,
+          "Seconds":300
+        },
+        {
+          "Time":1020,
+          "Seconds":180
+        },
+        {
+          "Time":1320,
+          "Seconds":600
+        }
+      ],
       "WikiPage":null,
       "Color":"88CDCF"
     },
     {
       "Id":12,
       "Name":"Бутовская",
+      "Delay":[
+        {
+          "Time":570,
+          "Seconds":240
+        },
+        {
+          "Time":1020,
+          "Seconds":240
+        },
+        {
+          "Time":1320,
+          "Seconds":360
+        }
+      ],
       "WikiPage":null,
       "Color":"BAC8E8"
     },
     {
       "Id":95,
       "Name":"Московское центральное кольцо",
+      "Delay":[
+        {
+          "Time":570,
+          "Seconds":720
+        },
+        {
+          "Time":1020,
+          "Seconds":360
+        },
+        {
+          "Time":1320,
+          "Seconds":720
+        }
+      ],
       "WikiPage":null,
       "Color":"F9BCD1"
     },
     {
       "Id":96,
       "Name":"Монорельс",
+      "Delay":[
+        {
+          "Time":570,
+          "Seconds":540
+        },
+        {
+          "Time":1020,
+          "Seconds":420
+        },
+        {
+          "Time":1320,
+          "Seconds":600
+        }
+      ],
       "WikiPage":null,
       "Color":"006DA8"
     }
@@ -2534,6 +2730,102 @@
       "ToNode":165,
       "Color":"#FF0072BA",
       "Time":120,
+      "Cost":0
+    },
+    {
+      "RouteId":4,
+      "FromNode":94,
+      "ToNode":150,
+      "Color":"#FF1EBCEF",
+      "Time":120,
+      "Cost":0
+    },
+    {
+      "RouteId":4,
+      "FromNode":150,
+      "ToNode":220,
+      "Color":"#FF1EBCEF",
+      "Time":120,
+      "Cost":0
+    },
+    {
+      "RouteId":4,
+      "FromNode":220,
+      "ToNode":14,
+      "Color":"#FF1EBCEF",
+      "Time":120,
+      "Cost":0
+    },
+    {
+      "RouteId":4,
+      "FromNode":14,
+      "ToNode":221,
+      "Color":"#FF1EBCEF",
+      "Time":140,
+      "Cost":0
+    },
+    {
+      "RouteId":4,
+      "FromNode":221,
+      "ToNode":97,
+      "Color":"#FF1EBCEF",
+      "Time":180,
+      "Cost":0
+    },
+    {
+      "RouteId":4,
+      "FromNode":97,
+      "ToNode":190,
+      "Color":"#FF1EBCEF",
+      "Time":170,
+      "Cost":0
+    },
+    {
+      "RouteId":4,
+      "FromNode":190,
+      "ToNode":72,
+      "Color":"#FF1EBCEF",
+      "Time":150,
+      "Cost":0
+    },
+    {
+      "RouteId":4,
+      "FromNode":72,
+      "ToNode":181,
+      "Color":"#FF1EBCEF",
+      "Time":135.000015,
+      "Cost":0
+    },
+    {
+      "RouteId":4,
+      "FromNode":181,
+      "ToNode":11,
+      "Color":"#FF1EBCEF",
+      "Time":120,
+      "Cost":0
+    },
+    {
+      "RouteId":4,
+      "FromNode":11,
+      "ToNode":4,
+      "Color":"#FF1EBCEF",
+      "Time":70,
+      "Cost":0
+    },
+    {
+      "RouteId":4,
+      "FromNode":72,
+      "ToNode":48,
+      "Color":"#FF1EBCEF",
+      "Time":270.000031,
+      "Cost":0
+    },
+    {
+      "RouteId":4,
+      "FromNode":48,
+      "ToNode":113,
+      "Color":"#FF1EBCEF",
+      "Time":89.99999,
       "Cost":0
     },
     {

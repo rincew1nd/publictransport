@@ -2,19 +2,22 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <corners android:bottomLeftRadius="10dip"/>
+            <stroke android:color="#FF000000"
+                android:width="0.5dp"/>
             <solid android:color="#b1b7ff"/>
         </shape>
     </item>
     <item android:state_focused="true">
         <shape android:shape="rectangle">
-            <corners android:bottomLeftRadius="10dip"/>
+            <stroke android:color="#FF000000"
+                android:width="0.5dp"/>
             <solid android:color="#58857e"/>
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
-            <corners android:bottomLeftRadius="10dip"/>
+            <stroke android:color="#FF000000"
+                android:width="0.5dp"/>
             <solid android:color="#b1b7ff"/>
         </shape>
     </item>
