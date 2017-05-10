@@ -25,6 +25,7 @@ import com.rincew1nd.publictransportmap.Models.Node;
 import com.rincew1nd.publictransportmap.Models.Path;
 import com.rincew1nd.publictransportmap.R;
 import com.rincew1nd.publictransportmap.ShortPath.ShortPathManager;
+import com.rincew1nd.publictransportmap.ShortPath.ShortestPathObj;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -80,10 +81,12 @@ public class MapsActivity extends FragmentActivity implements
             public void onClick(View view) {
                 if (fromNodeId != 0 && toNodeId != 0)
                 {
-                    Hashtable<ArrayList<Integer>, Integer> shortestPath =
-                            ShortPathManager.GetInstance().FindShortPath(fromNodeId, toNodeId);
-                    _markerManager.HighlightRoute(shortestPath.entrySet().iterator().next().getKey());
-                    int totaltime = shortestPath.entrySet().iterator().next().getValue();
+                    ShortestPathObj shortestPath =
+                        ShortPathManager.GetInstance()
+                        .FindShortestPaths(fromNodeId, toNodeId, 4)
+                        .get(0);
+                    _markerManager.HighlightRoute(shortestPath.Path);
+                    int totaltime = shortestPath.Criteria[0];
                     resultTimeView.setText(String.format("Время поездки %d минут %d секунд",
                             totaltime / 60, totaltime % 60));
                     findViewById(R.id.total_route_time_layout).setVisibility(View.VISIBLE);

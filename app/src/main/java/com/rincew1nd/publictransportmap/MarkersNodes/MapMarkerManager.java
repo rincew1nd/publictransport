@@ -143,9 +143,9 @@ public class MapMarkerManager {
         if (route == null) return;
 
         for (Node node: _transportMap.Nodes)
-            node.Marker.setAlpha(0.3f);
+            node.Marker.setAlpha(0.2f);
         for (Path path: _transportMap.Paths)
-            path.Line.setColor(0x55000000 | path.Line.getColor() & 0x00FFFFFF);
+            path.Line.setColor(0x33000000 | path.Line.getColor() & 0x00FFFFFF);
 
         for(int i = 0; i < route.size(); i++)
         {
