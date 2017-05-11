@@ -1,9 +1,6 @@
 package com.rincew1nd.publictransportmap.ShortPath;
 
-import com.google.maps.android.geojson.GeoJsonFeature;
 import com.rincew1nd.publictransportmap.Models.Path;
-
-import java.util.HashSet;
 
 public class GraphPath {
     public Path Path;

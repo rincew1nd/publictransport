@@ -83,7 +83,7 @@ public class MapsActivity extends FragmentActivity implements
                 {
                     ShortestPathObj shortestPath =
                         ShortPathManager.GetInstance()
-                        .FindShortestPaths(fromNodeId, toNodeId, 4)
+                        .FindShortestPaths(fromNodeId, toNodeId, 2)
                         .get(0);
                     _markerManager.HighlightRoute(shortestPath.Path);
                     int totaltime = shortestPath.Criteria[0];
@@ -151,6 +151,7 @@ public class MapsActivity extends FragmentActivity implements
 
         // Move camera to center of Moscow
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(55.748700, 37.617365), 10));
+        ShortPathManager.GetInstance().FindShortestPaths(225, 241, 2);
     }
 
     @Override
