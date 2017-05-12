@@ -1,4 +1,4 @@
-package com.rincew1nd.publictransportmap.Models;
+package com.rincew1nd.publictransportmap.Models.Metro;
 
 public class Delay
 {

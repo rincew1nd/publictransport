@@ -1,6 +1,6 @@
 package com.rincew1nd.publictransportmap.ShortPath;
 
-import com.rincew1nd.publictransportmap.Models.Path;
+import com.rincew1nd.publictransportmap.Models.Metro.Path;
 
 public class GraphPath {
     public Path Path;

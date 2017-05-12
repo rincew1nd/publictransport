@@ -1,8 +1,8 @@
-package com.rincew1nd.publictransportmap.Models;
+package com.rincew1nd.publictransportmap.Models.Metro;
 
 import java.util.List;
 
-public class PublicTransportMap
+public class MetroMap
 {
     public List<Node> Nodes;
     public List<Route> Routes;

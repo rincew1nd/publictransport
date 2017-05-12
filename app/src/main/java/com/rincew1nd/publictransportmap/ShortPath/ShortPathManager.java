@@ -3,14 +3,13 @@ package com.rincew1nd.publictransportmap.ShortPath;
 import android.util.Log;
 
 import com.rincew1nd.publictransportmap.MarkersNodes.MapMarkerManager;
-import com.rincew1nd.publictransportmap.Models.Node;
-import com.rincew1nd.publictransportmap.Models.Path;
-import com.rincew1nd.publictransportmap.Models.PublicTransportMap;
-import com.rincew1nd.publictransportmap.Models.Route;
+import com.rincew1nd.publictransportmap.Models.Metro.MetroMap;
+import com.rincew1nd.publictransportmap.Models.Metro.Node;
+import com.rincew1nd.publictransportmap.Models.Metro.Path;
+import com.rincew1nd.publictransportmap.Models.Metro.Route;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,14 +27,16 @@ public class ShortPathManager {
     private int _toNode;
     private ArrayList<ShortestPathObj> _algorhitmResult;
 
+    // Получить инстанс объекта
     public static ShortPathManager GetInstance() {
         if (_instance == null)
             _instance = new ShortPathManager();
         return _instance;
     }
 
+    // Собрать граф из моделей
     private ShortPathManager() {
-        PublicTransportMap transportMap = MapMarkerManager.GetInstance()._transportMap;
+        MetroMap transportMap = MapMarkerManager.GetInstance()._transportMap;
         int maxId = 0;
 
         Calendar c = Calendar.getInstance();
@@ -77,9 +78,10 @@ public class ShortPathManager {
             }
         }
 
-        OptimizeGraph(maxId);
+        //OptimizeGraph(maxId);
     }
 
+    // Поиск через Дейкстру
     public Hashtable<ArrayList<Integer>, Integer> FindShortPath(int fromNodeId, int toNodeId) {
         ArrayList<GraphNode> _visitedNodes = new ArrayList<>();
         ArrayList<GraphNode> _notVisitedNodes = new ArrayList<>(_graphNodes.values());
@@ -131,18 +133,18 @@ public class ShortPathManager {
         return resultPath;
     }
 
+    // Поиск пути с помощью DFS
     public ArrayList<ShortestPathObj> FindShortestPaths(int fromNodeId, int toNodeId, int depth) {
         // 43437
         _fromNode = fromNodeId;
         _toNode = toNodeId;
         _algorhitmResult = new ArrayList<>();
 
-        algorithmReadyGraph = new HashMap<>(_optimizedGraph);
-        RecoverOptimizedNodes(algorithmReadyGraph, fromNodeId, toNodeId);
+        //algorithmReadyGraph = new HashMap<>(_optimizedGraph);
+        //RecoverOptimizedNodes(algorithmReadyGraph, fromNodeId, toNodeId);
 
         // Берем начальную точку поиска
-        GraphNode firstNode = algorithmReadyGraph.get(_fromNode);
-        GraphNode firstNode2 = algorithmReadyGraph.get(_toNode);
+        GraphNode firstNode = _graphNodes.get(_fromNode);
         // Создаём путь
         ArrayList<Integer> path = new ArrayList<>();
         path.add(firstNode.Id);
@@ -154,6 +156,7 @@ public class ShortPathManager {
         return _algorhitmResult;
     }
 
+    // Depth-First Search
     private void DepthSearch(ArrayList<Integer> path, int[] weight, GraphNode lastNode, int depth) {
         if (lastNode.Id == _toNode)
         {
@@ -183,15 +186,17 @@ public class ShortPathManager {
         }
     }
 
-    // Graph optimization
-    // TODO New class
+    // Оптимизация графа
+    // TODO Вынести в новый класс
 
+    // Инициация оптимизации графа
     private void OptimizeGraph(int maxId) {
         _optimizedGraph = new HashMap<>(_graphNodes);
         while (OptimizeCycle(_optimizedGraph, maxId))
             maxId++;
     }
 
+    // Цикл оптимизации
     private boolean OptimizeCycle(HashMap<Integer, GraphNode> optimizedGraph, int maxId) {
         for (GraphNode node: optimizedGraph.values())
         {
@@ -264,6 +269,7 @@ public class ShortPathManager {
         return false;
     }
 
+    // Востановить оптимизированную ноду
     private void RecoverOptimizedNodes(HashMap<Integer, GraphNode> graph, int fromNode, int toNode) {
         boolean fromNodeExist = false;
         boolean toNodeExist = false;
@@ -283,6 +289,7 @@ public class ShortPathManager {
         }
     }
 
+    // Разбить оптимизированную ноду
     private void SplitOptimizedNodes(HashMap<Integer, GraphNode> graph, int nodeId) throws Exception {
         GraphNode optimizedNode = null;
         for (GraphNode node: graph.values())
@@ -316,6 +323,7 @@ public class ShortPathManager {
         graph.remove(optimizedNode.Id);
     }
 
+    // Принадлежат ли вершины и их соседи одному маршруту
     private boolean FromOneRouteId(GraphPath path) {
         if (path.FromNode.RouteId == path.ToNode.RouteId)
         {
@@ -332,6 +340,7 @@ public class ShortPathManager {
             return false;
     }
 
+    // Получить путь отличный от nodeId
     private GraphPath GetOtherPath(HashSet<GraphPath> paths, int nodeId) {
         for (GraphPath resultPath: paths)
             if (resultPath.ToNode.Id != nodeId)
@@ -339,6 +348,7 @@ public class ShortPathManager {
         return null;
     }
 
+    // Получить путь в nodeId
     private GraphPath GetPath(HashSet<GraphPath> paths, int nodeId) {
         for (GraphPath resultPath: paths)
             if (resultPath.ToNode.Id == nodeId)

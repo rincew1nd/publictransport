@@ -2,8 +2,7 @@ package com.rincew1nd.publictransportmap.ShortPath;
 
 import android.support.annotation.NonNull;
 
-import com.rincew1nd.publictransportmap.Models.Node;
-import com.rincew1nd.publictransportmap.Models.Path;
+import com.rincew1nd.publictransportmap.Models.Metro.Node;
 
 import java.util.HashSet;
 

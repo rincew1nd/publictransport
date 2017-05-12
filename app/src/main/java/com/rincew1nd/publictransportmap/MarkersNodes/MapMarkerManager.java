@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,10 +19,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
-import com.rincew1nd.publictransportmap.Models.Path;
+import com.rincew1nd.publictransportmap.Models.Metro.MetroMap;
+import com.rincew1nd.publictransportmap.Models.Metro.Path;
 import com.rincew1nd.publictransportmap.Utils.JsonSerializer;
-import com.rincew1nd.publictransportmap.Models.Node;
-import com.rincew1nd.publictransportmap.Models.PublicTransportMap;
+import com.rincew1nd.publictransportmap.Models.Metro.Node;
 import com.rincew1nd.publictransportmap.R;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class MapMarkerManager {
     private static MapMarkerManager instance;
     private Context _context;
 
-    public PublicTransportMap _transportMap;
+    public MetroMap _transportMap;
     private HashMap<Integer, Node> _mapNodes;
     private HashMap<Integer, HashSet<Path>> _mapPaths;
 
@@ -54,7 +55,7 @@ public class MapMarkerManager {
     // Load markers from JSON file and generate icons
     public void LoadMarkers() {
         JsonSerializer reader = new JsonSerializer(_context.getResources(), R.raw.metro);
-        _transportMap = reader.constructUsingGson(PublicTransportMap.class);
+        _transportMap = reader.constructUsingGson(MetroMap.class);
         for (Node marker: _transportMap.Nodes)
             marker.Icon = GenerateBitmapIcon(marker);
     }
@@ -138,8 +139,7 @@ public class MapMarkerManager {
         return returnedBitmap;
     }
 
-    public void HighlightRoute(ArrayList<Integer> route)
-    {
+    public void HighlightRoute(ArrayList<Integer> route) {
         if (route == null) return;
 
         for (Node node: _transportMap.Nodes)
@@ -152,14 +152,28 @@ public class MapMarkerManager {
             _mapNodes.get(route.get(i)).Marker.setAlpha(1f);
             if (i != route.size()-1)
             {
-                for (Path path: _mapPaths.get(route.get(i)))
-                    if (path.ToNode == route.get(i+1))
-                        path.Line.setColor(0xFF000000 | path.Line.getColor() & 0x00FFFFFF);
-                for (Path path: _mapPaths.get(route.get(i+1)))
-                    if (path.ToNode == route.get(i))
-                        path.Line.setColor(0xFF000000 | path.Line.getColor() & 0x00FFFFFF);
+                if (_mapPaths.get(route.get(i)) != null) {
+                    for (Path path: _mapPaths.get(route.get(i)))
+                        if (path.ToNode == route.get(i+1))
+                            path.Line.setColor(0xFF000000 | path.Line.getColor() & 0x00FFFFFF);
+                } else
+                    Log.d("FAIL", String.format("Dafaq? %d %d", i, route.get(i)));
+                if (_mapPaths.get(route.get(i+1)) != null) {
+                    for (Path path: _mapPaths.get(route.get(i+1)))
+                        if (path.ToNode == route.get(i))
+                            path.Line.setColor(0xFF000000 | path.Line.getColor() & 0x00FFFFFF);
+                } else
+                    Log.d("FAIL", String.format("Dafaq? %d %d", i+1, route.get(i+1)));
             }
         }
+    }
+
+    public void RestoreHighlight()
+    {
+        for (Node node: _transportMap.Nodes)
+            node.Marker.setAlpha(1f);
+        for (Path path: _transportMap.Paths)
+            path.Line.setColor(0xFF000000 | path.Line.getColor() & 0x00FFFFFF);
     }
 
     public Node GetNodeByMarker(Marker marker) {

@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,14 +20,11 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.rincew1nd.publictransportmap.MarkersNodes.MapMarkerManager;
 import com.rincew1nd.publictransportmap.MarkersNodes.MarkerInfoWindowAdapter;
-import com.rincew1nd.publictransportmap.Models.Node;
-import com.rincew1nd.publictransportmap.Models.Path;
 import com.rincew1nd.publictransportmap.R;
 import com.rincew1nd.publictransportmap.ShortPath.ShortPathManager;
 import com.rincew1nd.publictransportmap.ShortPath.ShortestPathObj;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 public class MapsActivity extends FragmentActivity implements
     OnCameraIdleListener,
@@ -42,6 +38,8 @@ public class MapsActivity extends FragmentActivity implements
     private boolean toButtonClick;
     private int fromNodeId;
     private int toNodeId;
+    private ArrayList<ShortestPathObj> spObj;
+    private int spOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,21 +79,38 @@ public class MapsActivity extends FragmentActivity implements
             public void onClick(View view) {
                 if (fromNodeId != 0 && toNodeId != 0)
                 {
-                    ShortestPathObj shortestPath =
-                        ShortPathManager.GetInstance()
-                        .FindShortestPaths(fromNodeId, toNodeId, 2)
-                        .get(0);
-                    _markerManager.HighlightRoute(shortestPath.Path);
-                    int totaltime = shortestPath.Criteria[0];
-                    resultTimeView.setText(String.format("Время поездки %d минут %d секунд",
-                            totaltime / 60, totaltime % 60));
+                    spObj = ShortPathManager.GetInstance()
+                        .FindShortestPaths(fromNodeId, toNodeId, 2);
+                    spOrder = 0;
+                    if (spObj.size() != 0)
+                    {
+                        _markerManager.HighlightRoute(spObj.get(spOrder).Path);
+                        int totaltime = spObj.get(spOrder).Criteria[0];
+                        resultTimeView.setText(String.format("Время поездки %d минут %d секунд",
+                                totaltime / 60, totaltime % 60));
+                    } else
+                        resultTimeView.setText("Пути не найдено");
                     findViewById(R.id.total_route_time_layout).setVisibility(View.VISIBLE);
                 }
+            }
+        });
+        resultTimeView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                if (spObj.size() != 0)
+                {
+                    spOrder = (spObj.size() > spOrder++) ? spOrder++ : 0;
+                    _markerManager.HighlightRoute(spObj.get(spOrder).Path);
+                    int totaltime = spObj.get(spOrder).Criteria[0];
+                    resultTimeView.setText(String.format("Время поездки %d минут %d секунд",
+                            totaltime / 60, totaltime % 60));
+                } else
+                    resultTimeView.setText("Пути не найдено");
             }
         });
         closeResultButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 findViewById(R.id.total_route_time_layout).setVisibility(View.GONE);
+                _markerManager.RestoreHighlight();
             }
         });
     }
@@ -134,7 +149,7 @@ public class MapsActivity extends FragmentActivity implements
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        mMap.setInfoWindowAdapter(new MarkerInfoWindowAdapter(this));
+        //mMap.setInfoWindowAdapter(new MarkerInfoWindowAdapter(this));
         mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style));
 
         // Set last zoom
@@ -151,7 +166,6 @@ public class MapsActivity extends FragmentActivity implements
 
         // Move camera to center of Moscow
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(55.748700, 37.617365), 10));
-        ShortPathManager.GetInstance().FindShortestPaths(225, 241, 2);
     }
 
     @Override
