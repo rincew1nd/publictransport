@@ -5,5 +5,4 @@ public class Node {
     public String Name;
     public float Lon;
     public float Lat;
-    public int RouteId;
 }

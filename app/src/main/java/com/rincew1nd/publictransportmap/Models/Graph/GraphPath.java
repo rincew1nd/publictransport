@@ -1,50 +1,55 @@
 package com.rincew1nd.publictransportmap.Models.Graph;
 
+import android.graphics.Color;
+import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
+import com.rincew1nd.publictransportmap.Models.Transfers.Transfer;
+
 public class GraphPath {
 
     public GraphNode FromNode;
     public GraphNode ToNode;
 
     public boolean IsTransfer;
-    public int RouteId;
     public int Time;
     public int Cost;
 
     // TODO Хранить как-то по другому
-    public String Color;
+    public int PathColor = 0;
 
-    public GraphPath (GraphNode from, GraphNode to, int routeId, int time, int cost, String color) {
-        FromNode = from;
-        ToNode = to;
+    public GraphPath (int from, int to, int time, int cost) {
+        FromNode = GraphManager.GetInstance().GetNodeById(from);
+        ToNode = GraphManager.GetInstance().GetNodeById(to);
 
-        RouteId = routeId;
         Time = time;
         Cost = cost;
-        Color = color;
 
-        IsTransfer = from.RouteId != to.RouteId;
+        IsTransfer = (FromNode.Type != ToNode.Type);
     }
 
-    public GraphPath (GraphNode from, GraphNode to, com.rincew1nd.publictransportmap.Models.Unscheduled.Path path) {
-        FromNode = from;
-        ToNode = to;
-
-        RouteId = path.RouteId;
-        Time = path.Time;
-        Cost = 0;
-        Color = path.Color;
-
-        IsTransfer = from.RouteId != to.RouteId;
+    public GraphPath (com.rincew1nd.publictransportmap.Models.Unscheduled.Path path) {
+        this(path.FromNodeId, path.ToNodeId, path.Time, 0);
+        if (!(IsTransfer || FromNode.RouteId != ToNode.RouteId)) {
+            String color = null;
+            for (com.rincew1nd.publictransportmap.Models.Unscheduled.Route route:
+                    GraphManager.GetInstance().TransportGraph.UnscheduledTransport.Routes)
+                if (route.Id == path.FromNode.RouteId)
+                    color = route.Color;
+            if (color != null)
+                SetColor(color);
+        }
     }
 
-    public GraphPath (GraphNode from, GraphNode to, com.rincew1nd.publictransportmap.Models.WalkingPaths.Path path) {
-        FromNode = from;
-        ToNode = to;
+    public GraphPath (com.rincew1nd.publictransportmap.Models.WalkingPaths.Path path) {
+        this(path.FromNodeId, path.ToNodeId, path.Time, 0);
+        SetColor("FF00FF");
+    }
 
-        Time = path.Time;
-        Color = "FF00FF";
-        Cost = 0;
+    public GraphPath (Transfer transfer) {
+        this(transfer.FromNodeId, transfer.ToNodeId, transfer.Time, transfer.Cost);
+        IsTransfer = true;
+    }
 
-        IsTransfer = from.RouteId != to.RouteId;
+    public void SetColor(String color) {
+        PathColor = Color.parseColor("#"+color);
     }
 }

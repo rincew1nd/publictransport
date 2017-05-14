@@ -161,6 +161,7 @@ public class MapsActivity extends FragmentActivity implements
         GraphManager.GetInstance().SetContext(this);
         GraphManager.GetInstance().LoadGraph();
         GraphManager.GetInstance().LinkStructures();
+        GraphManager.GetInstance().ProcessGraph();
         MapMarkerManager.GetInstance().SetContext(this);
         MapMarkerManager.GetInstance().SetUpMarkersAndPaths(mMap);
 

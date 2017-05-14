@@ -20,6 +20,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
 import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
+import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
+import com.rincew1nd.publictransportmap.Models.Graph.GraphPath;
 import com.rincew1nd.publictransportmap.Models.Scheduled.Stop;
 import com.rincew1nd.publictransportmap.Models.Unscheduled.Station;
 import com.rincew1nd.publictransportmap.Models.WalkingPaths.Node;
@@ -51,33 +53,9 @@ public class MapMarkerManager {
 
     // SetUp markers and path on google map
     public void SetUpMarkersAndPaths(GoogleMap mMap) {
-        // Place markers on Map
-        for (Station marker: _graphManager.TransportGraph.UnscheduledTransport.Stations) {
-            Bitmap mapMarkerIcon = GenerateBitmapIcon(marker.Name, "#0000FF");
-            MarkerOptions markerOptions = new MarkerOptions()
-                    .title(marker.Name)
-                    .icon(BitmapDescriptorFactory.fromBitmap(mapMarkerIcon))
-                    .position(new LatLng(marker.Lat, marker.Lon))
-                    .anchor(0.08f, 0.5f);
-            Marker mapMarker = mMap.addMarker(markerOptions);
-            mapMarker.setTag(marker);
-            _markersImage.put(mapMarker, mapMarkerIcon);
-        }
-
-        for (Stop stop: _graphManager.TransportGraph.ScheduledTransport.Stops) {
-            Bitmap mapMarkerIcon = GenerateBitmapIcon(stop.Name, "#00FF00");
-            MarkerOptions markerOptions = new MarkerOptions()
-                    .title(stop.Name)
-                    .icon(BitmapDescriptorFactory.fromBitmap(mapMarkerIcon))
-                    .position(new LatLng(stop.Lat, stop.Lon))
-                    .anchor(0.08f, 0.5f);
-            Marker mapMarker = mMap.addMarker(markerOptions);
-            mapMarker.setTag(stop);
-            _markersImage.put(mapMarker, mapMarkerIcon);
-        }
-
-        for (Node node: _graphManager.TransportGraph.WalkingPaths.Nodes) {
-            Bitmap mapMarkerIcon = GenerateBitmapIcon(node.Name, "#FF0000");
+        // Place markers on map
+        for (GraphNode node: _graphManager.Nodes.values()) {
+            Bitmap mapMarkerIcon = GenerateBitmapIcon(node.Name, node.NodeColor);
             MarkerOptions markerOptions = new MarkerOptions()
                     .title(node.Name)
                     .icon(BitmapDescriptorFactory.fromBitmap(mapMarkerIcon))
@@ -88,31 +66,80 @@ public class MapMarkerManager {
             _markersImage.put(mapMarker, mapMarkerIcon);
         }
 
+//        // Place markers on Map
+//        for (Station marker: _graphManager.TransportGraph.UnscheduledTransport.Stations) {
+//            Bitmap mapMarkerIcon = GenerateBitmapIcon(marker.Name, "#0000FF");
+//            MarkerOptions markerOptions = new MarkerOptions()
+//                    .title(marker.Name)
+//                    .icon(BitmapDescriptorFactory.fromBitmap(mapMarkerIcon))
+//                    .position(new LatLng(marker.Lat, marker.Lon))
+//                    .anchor(0.08f, 0.5f);
+//            Marker mapMarker = mMap.addMarker(markerOptions);
+//            mapMarker.setTag(marker);
+//            _markersImage.put(mapMarker, mapMarkerIcon);
+//        }
+//
+//        for (Stop stop: _graphManager.TransportGraph.ScheduledTransport.Stops) {
+//            Bitmap mapMarkerIcon = GenerateBitmapIcon(stop.Name, "#00FF00");
+//            MarkerOptions markerOptions = new MarkerOptions()
+//                    .title(stop.Name)
+//                    .icon(BitmapDescriptorFactory.fromBitmap(mapMarkerIcon))
+//                    .position(new LatLng(stop.Lat, stop.Lon))
+//                    .anchor(0.08f, 0.5f);
+//            Marker mapMarker = mMap.addMarker(markerOptions);
+//            mapMarker.setTag(stop);
+//            _markersImage.put(mapMarker, mapMarkerIcon);
+//        }
+//
+//        for (Node node: _graphManager.TransportGraph.WalkingPaths.Nodes) {
+//            Bitmap mapMarkerIcon = GenerateBitmapIcon(node.Name, "#FF0000");
+//            MarkerOptions markerOptions = new MarkerOptions()
+//                    .title(node.Name)
+//                    .icon(BitmapDescriptorFactory.fromBitmap(mapMarkerIcon))
+//                    .position(new LatLng(node.Lat, node.Lon))
+//                    .anchor(0.08f, 0.5f);
+//            Marker mapMarker = mMap.addMarker(markerOptions);
+//            mapMarker.setTag(node);
+//            _markersImage.put(mapMarker, mapMarkerIcon);
+//        }
+
         // Draw paths on Map
-        for (com.rincew1nd.publictransportmap.Models.Unscheduled.Path path:
-                _graphManager.TransportGraph.UnscheduledTransport.Paths) {
-            int width = path.RouteId == -1 ? 30 : 10;
+        for (GraphPath path: _graphManager.Paths) {
+            int width = path.IsTransfer ? 30 : 10;
             PolylineOptions polylineOptions = new PolylineOptions()
                     .add(new LatLng(path.FromNode.Lat, path.FromNode.Lon))
                     .add(new LatLng(path.ToNode.Lat, path.ToNode.Lon))
                     .width(width)
                     .startCap(new RoundCap())
                     .endCap(new RoundCap())
-                    .color(Color.parseColor(path.Color));
+                    .color(path.PathColor);
             mMap.addPolyline(polylineOptions);
         }
 
-        for (com.rincew1nd.publictransportmap.Models.WalkingPaths.Path path:
-                _graphManager.TransportGraph.WalkingPaths.Paths) {
-            PolylineOptions polylineOptions = new PolylineOptions()
-                    .add(new LatLng(path.FromNode.Lat, path.FromNode.Lon))
-                    .add(new LatLng(path.ToNode.Lat, path.ToNode.Lon))
-                    .width(10)
-                    .startCap(new RoundCap())
-                    .endCap(new RoundCap())
-                    .color(Color.parseColor("#FF0000"));
-            mMap.addPolyline(polylineOptions);
-        }
+//        for (com.rincew1nd.publictransportmap.Models.Unscheduled.Path path:
+//                _graphManager.TransportGraph.UnscheduledTransport.Paths) {
+//            int width = path.RouteId == -1 ? 30 : 10;
+//            PolylineOptions polylineOptions = new PolylineOptions()
+//                    .add(new LatLng(path.FromNode.Lat, path.FromNode.Lon))
+//                    .add(new LatLng(path.ToNode.Lat, path.ToNode.Lon))
+//                    .width(width)
+//                    .startCap(new RoundCap())
+//                    .endCap(new RoundCap())
+//                    .color(Color.parseColor(path.Color));
+//            mMap.addPolyline(polylineOptions);
+//        }
+//
+//        for (com.rincew1nd.publictransportmap.Models.WalkingPaths.Path path:
+//                _graphManager.TransportGraph.WalkingPaths.Paths) {
+//            PolylineOptions polylineOptions = new PolylineOptions()
+//                    .add(new LatLng(path.FromNode.Lat, path.FromNode.Lon))
+//                    .add(new LatLng(path.ToNode.Lat, path.ToNode.Lon))
+//                    .width(10)
+//                    .startCap(new RoundCap())
+//                    .endCap(new RoundCap())
+//                    .color(Color.parseColor("#FF0000"));
+//            mMap.addPolyline(polylineOptions);
+//        }
     }
 
     // Rescale markers icons proportional to map zoom
@@ -129,7 +156,7 @@ public class MapMarkerManager {
     }
 
     // Generate icons
-    private Bitmap GenerateBitmapIcon(String text, String color) {
+    private Bitmap GenerateBitmapIcon(String text, int color) {
         View customMarkerView =
                 ((LayoutInflater) _context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                         .inflate(R.layout.custom_marker_view, null);
@@ -137,7 +164,7 @@ public class MapMarkerManager {
         TextView markerText = (TextView) customMarkerView.findViewById(R.id.marker_text);
 
         //markerImage.setBackgroundResource(R.drawable.circle);
-        ((GradientDrawable)markerImage.getBackground()).setColor(Color.parseColor(color));
+        ((GradientDrawable)markerImage.getBackground()).setColor(color);
         markerText.setText(text);
 
         customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);

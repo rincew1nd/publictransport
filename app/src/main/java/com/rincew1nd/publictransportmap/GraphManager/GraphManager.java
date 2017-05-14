@@ -8,18 +8,21 @@ import com.rincew1nd.publictransportmap.Models.Scheduled.Calendar;
 import com.rincew1nd.publictransportmap.Models.Scheduled.Stop;
 import com.rincew1nd.publictransportmap.Models.Scheduled.StopTime;
 import com.rincew1nd.publictransportmap.Models.Scheduled.Trip;
+import com.rincew1nd.publictransportmap.Models.Transfers.Transfer;
 import com.rincew1nd.publictransportmap.Models.Transport;
 import com.rincew1nd.publictransportmap.Models.Unscheduled.Station;
 import com.rincew1nd.publictransportmap.Models.WalkingPaths.Node;
 import com.rincew1nd.publictransportmap.Utils.JsonSerializer;
 import com.rincew1nd.publictransportmap.R;
+
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class GraphManager {
     private static GraphManager _instance;
 
     private GraphManager() {
-        Nodes = new HashSet<>();
+        Nodes = new HashMap<>();
         Paths = new HashSet<>();
     }
     public static GraphManager GetInstance() {
@@ -35,7 +38,7 @@ public class GraphManager {
     private Context _context;
     public Transport TransportGraph;
 
-    public HashSet<GraphNode> Nodes;
+    public HashMap<Integer, GraphNode> Nodes;
     public HashSet<GraphPath> Paths;
 
     // Load markers from JSON file and generate icons
@@ -127,10 +130,23 @@ public class GraphManager {
 
     public void ProcessGraph() {
         for (Station station : TransportGraph.UnscheduledTransport.Stations)
-            Nodes.add(new GraphNode(station));
+            Nodes.put(station.Id, new GraphNode(station));
         for (Node node: TransportGraph.WalkingPaths.Nodes)
-            Nodes.add(new GraphNode(node));
-        //for (Stop stop: _transportGraph.ScheduledTransport.Stops)
-        //    Nodes.add(stop, )
+            Nodes.put(node.Id, new GraphNode(node));
+        for (Stop stop: TransportGraph.ScheduledTransport.Stops)
+            Nodes.put(stop.Id, new GraphNode(stop));
+
+        for (com.rincew1nd.publictransportmap.Models.Unscheduled.Path path:
+                TransportGraph.UnscheduledTransport.Paths)
+            Paths.add(new GraphPath(path));
+        for (com.rincew1nd.publictransportmap.Models.WalkingPaths.Path path:
+                TransportGraph.WalkingPaths.Paths)
+            Paths.add(new GraphPath(path));
+        for (Transfer transfer: TransportGraph.Transfers)
+            Paths.add(new GraphPath(transfer));
+    }
+
+    public GraphNode GetNodeById(int nodeId) {
+        return Nodes.get(nodeId);
     }
 }

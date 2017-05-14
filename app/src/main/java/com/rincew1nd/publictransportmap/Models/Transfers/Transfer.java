@@ -4,4 +4,6 @@ public class Transfer {
     public int FromNodeId;
     public int ToNodeId;
     public int Time;
+
+    public int Cost;
 }
