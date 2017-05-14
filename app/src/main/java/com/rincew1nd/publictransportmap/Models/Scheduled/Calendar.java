@@ -1,4 +1,4 @@
-package com.rincew1nd.publictransportmap.Models.GTFS;
+package com.rincew1nd.publictransportmap.Models.Scheduled;
 
 public class Calendar {
     public Integer Id;

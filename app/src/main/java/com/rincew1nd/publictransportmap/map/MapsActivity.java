@@ -18,10 +18,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
-import com.rincew1nd.publictransportmap.MarkersNodes.MapMarkerManager;
-import com.rincew1nd.publictransportmap.MarkersNodes.MarkerInfoWindowAdapter;
+import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
 import com.rincew1nd.publictransportmap.R;
-import com.rincew1nd.publictransportmap.ShortPath.ShortPathManager;
 import com.rincew1nd.publictransportmap.ShortPath.ShortestPathObj;
 
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ public class MapsActivity extends FragmentActivity implements
     OnMapReadyCallback{
 
     private GoogleMap mMap;
-    private MapMarkerManager _markerManager;
+    //private MapMarkerManager _markerManager;
     private float lastZoom;
     private boolean fromButtonClick;
     private boolean toButtonClick;
@@ -79,12 +77,12 @@ public class MapsActivity extends FragmentActivity implements
             public void onClick(View view) {
                 if (fromNodeId != 0 && toNodeId != 0)
                 {
-                    spObj = ShortPathManager.GetInstance()
-                        .FindShortestPaths(fromNodeId, toNodeId, 2);
+                    //spObj = ShortPathManager.GetInstance()
+                        //.FindShortestPaths(fromNodeId, toNodeId, 2);
                     spOrder = 0;
                     if (spObj.size() != 0)
                     {
-                        _markerManager.HighlightRoute(spObj.get(spOrder).Path);
+                        //_markerManager.HighlightRoute(spObj.get(spOrder).Path);
                         int totaltime = spObj.get(spOrder).Criteria[0];
                         resultTimeView.setText(String.format("Время поездки %d минут %d секунд",
                                 totaltime / 60, totaltime % 60));
@@ -99,7 +97,7 @@ public class MapsActivity extends FragmentActivity implements
                 if (spObj.size() != 0)
                 {
                     spOrder = (spObj.size() > spOrder++) ? spOrder++ : 0;
-                    _markerManager.HighlightRoute(spObj.get(spOrder).Path);
+                    //_markerManager.HighlightRoute(spObj.get(spOrder).Path);
                     int totaltime = spObj.get(spOrder).Criteria[0];
                     resultTimeView.setText(String.format("Время поездки %d минут %d секунд",
                             totaltime / 60, totaltime % 60));
@@ -110,7 +108,7 @@ public class MapsActivity extends FragmentActivity implements
         closeResultButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 findViewById(R.id.total_route_time_layout).setVisibility(View.GONE);
-                _markerManager.RestoreHighlight();
+                //_markerManager.RestoreHighlight();
             }
         });
     }
@@ -160,9 +158,12 @@ public class MapsActivity extends FragmentActivity implements
         mMap.setOnMarkerClickListener(this);
 
         // Create marker manager
-        _markerManager = MapMarkerManager.GetInstance().SetCotext(this);
-        _markerManager.LoadMarkers();
-        _markerManager.SetUpMarkersAndPaths(mMap);
+        GraphManager.GetInstance().SetCotext(this);
+        GraphManager.GetInstance().LoadGraph();
+        GraphManager.GetInstance().LinkStructures();
+        //_markerManager = MapMarkerManager.GetInstance().SetCotext(this);
+        //_markerManager.LoadMarkers();
+        //_markerManager.SetUpMarkersAndPaths(mMap);
 
         // Move camera to center of Moscow
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(55.748700, 37.617365), 10));
@@ -173,7 +174,7 @@ public class MapsActivity extends FragmentActivity implements
         if (lastZoom != mMap.getCameraPosition().zoom)
         {
             lastZoom = mMap.getCameraPosition().zoom;
-            _markerManager.UpdateMarkers(lastZoom);
+            //_markerManager.UpdateMarkers(lastZoom);
         }
     }
 

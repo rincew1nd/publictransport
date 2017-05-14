@@ -1,5 +1,6 @@
-package com.rincew1nd.publictransportmap.Models.Metro;
+package com.rincew1nd.publictransportmap.Models.Unscheduled;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class Route {
@@ -8,5 +9,7 @@ public class Route {
     public List<Delay> Delay;
     public String WikiPage;
     public String Color;
+
+    public HashMap<Integer, Station> Stations = new HashMap<>();
 }
 
