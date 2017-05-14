@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
+import com.rincew1nd.publictransportmap.MarkersNodes.MapMarkerManager;
 import com.rincew1nd.publictransportmap.R;
 import com.rincew1nd.publictransportmap.ShortPath.ShortestPathObj;
 
@@ -30,7 +31,6 @@ public class MapsActivity extends FragmentActivity implements
     OnMapReadyCallback{
 
     private GoogleMap mMap;
-    //private MapMarkerManager _markerManager;
     private float lastZoom;
     private boolean fromButtonClick;
     private boolean toButtonClick;
@@ -158,12 +158,11 @@ public class MapsActivity extends FragmentActivity implements
         mMap.setOnMarkerClickListener(this);
 
         // Create marker manager
-        GraphManager.GetInstance().SetCotext(this);
+        GraphManager.GetInstance().SetContext(this);
         GraphManager.GetInstance().LoadGraph();
         GraphManager.GetInstance().LinkStructures();
-        //_markerManager = MapMarkerManager.GetInstance().SetCotext(this);
-        //_markerManager.LoadMarkers();
-        //_markerManager.SetUpMarkersAndPaths(mMap);
+        MapMarkerManager.GetInstance().SetContext(this);
+        MapMarkerManager.GetInstance().SetUpMarkersAndPaths(mMap);
 
         // Move camera to center of Moscow
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(55.748700, 37.617365), 10));
@@ -174,7 +173,7 @@ public class MapsActivity extends FragmentActivity implements
         if (lastZoom != mMap.getCameraPosition().zoom)
         {
             lastZoom = mMap.getCameraPosition().zoom;
-            //_markerManager.UpdateMarkers(lastZoom);
+            MapMarkerManager.GetInstance().UpdateMarkers(lastZoom);
         }
     }
 

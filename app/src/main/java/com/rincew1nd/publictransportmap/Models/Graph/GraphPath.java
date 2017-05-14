@@ -41,7 +41,6 @@ public class GraphPath {
         FromNode = from;
         ToNode = to;
 
-        RouteId = path.RouteId;
         Time = path.Time;
         Color = "FF00FF";
         Cost = 0;
