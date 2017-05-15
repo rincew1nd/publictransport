@@ -14,8 +14,8 @@ public class ShortPathManager {
     private static ShortPathManager _instance;
     //private static HashMap<Integer, GraphNode> _optimizedGraph;
 
-    private int _fromNode;
-    private int _toNode;
+    private GraphNode _fromNode;
+    private GraphNode _toNode;
     private ArrayList<ShortestPathObj> _algorithmResult;
 
     public static ShortPathManager GetInstance() {
@@ -68,28 +68,31 @@ public class ShortPathManager {
     //}
 
     public ArrayList<ShortestPathObj> FindShortestPaths(int fromNodeId, int toNodeId, int depth) {
-        _fromNode = fromNodeId;
-        _toNode = toNodeId;
         _algorithmResult = new ArrayList<>();
 
         //RecoverOptimizedNodes(algorithmReadyGraph, fromNodeId, toNodeId);
 
-        GraphNode firstNode = GraphManager.GetInstance().Nodes.get(_fromNode);
+        _fromNode = GraphManager.GetInstance().Nodes.get(fromNodeId);
+        _toNode = GraphManager.GetInstance().Nodes.get(toNodeId);
         ArrayList<Integer> path = new ArrayList<>();
 
-        path.add(firstNode.Id);
+        path.add(_fromNode.Id);
         // Создаём вес (время, пересадки, стоимость)
         // TODO начальная стоимость поездки
         int[] weight = new int[] {0, 0, 10};
 
-        DepthSearch(path, weight, firstNode, depth);
+        Log.d("SEARCHSTART", "2345");
+        DepthSearch(path, weight, _fromNode, depth, true);
         Collections.sort(_algorithmResult);
+        Log.d("SEARCHEND", "2345");
         return _algorithmResult;
     }
 
     // Depth-First Search
-    private void DepthSearch(ArrayList<Integer> path, int[] weight, GraphNode lastNode, int depth) {
-        if (lastNode.Id == _toNode)
+    private void DepthSearch(ArrayList<Integer> path, int[] weight, GraphNode lastNode,
+                             int depth, boolean addDelay) {
+        boolean addDelayCopy = false;
+        if (lastNode.Id == _toNode.Id)
         {
             ShortestPathObj result = new ShortestPathObj(path, weight);
             _algorithmResult.add(result);
@@ -99,6 +102,10 @@ public class ShortPathManager {
         for(GraphPath gPath: lastNode.Paths) {
             if (path.contains(gPath.ToNode.Id) || weight[1] > depth)
                 continue;
+            if (weight[1] == depth &&
+                (gPath.ToNode.Type != _toNode.Type ||
+                 gPath.ToNode.RouteId != _toNode.RouteId))
+                    continue;
             if (gPath.Delay < 0)
                 continue;
 
@@ -109,15 +116,22 @@ public class ShortPathManager {
                 newPath.add(gPath.ToNode.Id);
 
             int[] newWeight = new int[]{weight[0], weight[1], weight[2]};
-            newWeight[0] += gPath.Time;
+            newWeight[0] += gPath.Time + ((addDelay) ? gPath.Delay : 0);
             if (gPath.IsTransfer) {
-                newWeight[0] += gPath.Delay;
+                addDelayCopy = true;
                 newWeight[1]++;
-                // TODO добавить цену
                 newWeight[2] += 10;
             }
-            DepthSearch(newPath, newWeight, gPath.ToNode, depth);
+            DepthSearch(newPath, newWeight, gPath.ToNode, depth, addDelayCopy);
         }
+    }
+
+    public String GetPathString(ArrayList<Integer> array) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(array.size()+" | ");
+        for (int i: array)
+            sb.append(GraphManager.GetInstance().GetNodeById(i).Name + " ");
+        return sb.toString();
     }
 
 //    // Инициация оптимизации графа

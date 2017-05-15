@@ -85,7 +85,7 @@ public class MapsActivity extends FragmentActivity implements
                 if (fromNodeId != 0 && toNodeId != 0)
                 {
                     spObj = ShortPathManager.GetInstance()
-                        .FindShortestPaths(fromNodeId, toNodeId, 2);
+                        .FindShortestPaths(fromNodeId, toNodeId, 4);
                     spOrder = 0;
                     if (spObj.size() != 0)
                     {
@@ -212,7 +212,6 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onPolylineClick(Polyline polyline) {
         GraphPath path = MapMarkerManager.GetInstance().GetGraphPathByPolyline(polyline);
-        if (path != null && path.Delay != 0)
-            Toast.makeText(this, ""+path.Delay, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, path.IsTransfer+" "+path.Time+" "+path.Delay, Toast.LENGTH_SHORT).show();
     }
 }

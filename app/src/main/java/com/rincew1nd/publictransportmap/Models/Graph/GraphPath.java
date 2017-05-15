@@ -15,6 +15,7 @@ public class GraphPath {
     public GraphNode FromNode;
     public GraphNode ToNode;
 
+    public GraphNodeType Type;
     public boolean IsTransfer;
     public int Delay = 0;
     public int Time;
@@ -25,18 +26,18 @@ public class GraphPath {
 
     public ArrayList<LatLng> MidPoints;
 
-    public GraphPath (int from, int to, int time, int cost) {
+    public GraphPath (GraphNodeType type, int from, int to, int time, int cost) {
+        Type = type;
         FromNode = GraphManager.GetInstance().GetNodeById(from);
         ToNode = GraphManager.GetInstance().GetNodeById(to);
 
         Time = time;
         Cost = cost;
-
-        IsTransfer = (FromNode.Type != ToNode.Type);
     }
 
     public GraphPath (com.rincew1nd.publictransportmap.Models.Unscheduled.Path path) {
-        this(path.FromNodeId, path.ToNodeId, path.Time, 0);
+        this(GraphNodeType.Unscheduled, path.FromNodeId, path.ToNodeId, path.Time, 0);
+        IsTransfer = (path.FromNode.RouteId != path.ToNode.RouteId || path.RouteId == -1);
         if (!(IsTransfer || FromNode.RouteId != ToNode.RouteId)) {
             String color = null;
             for (com.rincew1nd.publictransportmap.Models.Unscheduled.Route route:
@@ -49,20 +50,20 @@ public class GraphPath {
     }
 
     public GraphPath (com.rincew1nd.publictransportmap.Models.WalkingPaths.Path path) {
-        this(path.FromNodeId, path.ToNodeId, path.Time, 0);
+        this(GraphNodeType.Walking, path.FromNodeId, path.ToNodeId, path.Time, 0);
         SetColor("FF0000");
     }
 
     public GraphPath (Transfer transfer) {
-        this(transfer.FromNodeId, transfer.ToNodeId, transfer.Time, transfer.Cost);
+        this(GraphNodeType.None, transfer.FromNodeId, transfer.ToNodeId, transfer.Time, transfer.Cost);
         IsTransfer = true;
     }
 
     public GraphPath (StopTime from, StopTime to) {
-        this(from.StopId, to.StopId, (to.ArrivalTime - from.DepartureTime)*60, 32);
+        this(GraphNodeType.Scheduled, from.StopId, to.StopId, (to.ArrivalTime - from.DepartureTime)*60, 32);
         int time = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)*60+
                    Calendar.getInstance().get(Calendar.MINUTE);
-        Delay = from.DepartureTime - time;
+        Delay = (from.DepartureTime - time)*60;
         SetColor("FF00FF");
     }
 

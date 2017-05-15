@@ -157,11 +157,7 @@ public class GraphManager {
 
         for (Trip trip: TransportGraph.ScheduledTransport.Trips)
             for (int i = 1; i < trip.StopTimes.size(); i++)
-            {
-                if (trip.StopTimes.get(i-1).StopId == 256 && trip.StopTimes.get(i).StopId == 261)
-                    Log.d("TEST", "TEST");
                 Paths.add(new GraphPath(trip.StopTimes.get(i-1), trip.StopTimes.get(i)));
-            }
 
         for (GraphPath path: Paths)
             path.FromNode.Paths.add(path);

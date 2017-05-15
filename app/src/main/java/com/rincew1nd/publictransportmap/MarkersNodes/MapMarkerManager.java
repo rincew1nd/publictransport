@@ -127,7 +127,7 @@ public class MapMarkerManager {
             return;
 
         for (Marker station : _markersImage.keySet())
-            station.setAlpha(0.2f);
+            station.setAlpha(0.1f);
         for (Polyline path: _polyPaths.keySet())
             path.setColor(0x33000000 | path.getColor() & 0x00FFFFFF);
 
