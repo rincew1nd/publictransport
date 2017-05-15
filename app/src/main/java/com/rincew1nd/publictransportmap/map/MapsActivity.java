@@ -3,6 +3,7 @@ package com.rincew1nd.publictransportmap.map;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,9 +19,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.maps.android.MarkerManager;
 import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
 import com.rincew1nd.publictransportmap.MarkersNodes.MapMarkerManager;
+import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
+import com.rincew1nd.publictransportmap.Models.Graph.GraphPath;
 import com.rincew1nd.publictransportmap.R;
+import com.rincew1nd.publictransportmap.ShortPath.ShortPathManager;
 import com.rincew1nd.publictransportmap.ShortPath.ShortestPathObj;
 
 import java.util.ArrayList;
@@ -28,6 +34,7 @@ import java.util.ArrayList;
 public class MapsActivity extends FragmentActivity implements
     OnCameraIdleListener,
     GoogleMap.OnMarkerClickListener,
+    GoogleMap.OnPolylineClickListener,
     OnMapReadyCallback{
 
     private GoogleMap mMap;
@@ -77,15 +84,15 @@ public class MapsActivity extends FragmentActivity implements
             public void onClick(View view) {
                 if (fromNodeId != 0 && toNodeId != 0)
                 {
-                    //spObj = ShortPathManager.GetInstance()
-                        //.FindShortestPaths(fromNodeId, toNodeId, 2);
+                    spObj = ShortPathManager.GetInstance()
+                        .FindShortestPaths(fromNodeId, toNodeId, 2);
                     spOrder = 0;
                     if (spObj.size() != 0)
                     {
-                        //_markerManager.HighlightRoute(spObj.get(spOrder).Path);
-                        int totaltime = spObj.get(spOrder).Criteria[0];
+                        MapMarkerManager.GetInstance().HighlightRoute(spObj.get(spOrder).Path);
+                        int totalTime = spObj.get(spOrder).Criteria[0];
                         resultTimeView.setText(String.format("Время поездки %d минут %d секунд",
-                                totaltime / 60, totaltime % 60));
+                                totalTime / 60, totalTime % 60));
                     } else
                         resultTimeView.setText("Пути не найдено");
                     findViewById(R.id.total_route_time_layout).setVisibility(View.VISIBLE);
@@ -96,11 +103,11 @@ public class MapsActivity extends FragmentActivity implements
             public void onClick(View view) {
                 if (spObj.size() != 0)
                 {
-                    spOrder = (spObj.size() > spOrder++) ? spOrder++ : 0;
-                    //_markerManager.HighlightRoute(spObj.get(spOrder).Path);
-                    int totaltime = spObj.get(spOrder).Criteria[0];
+                    spOrder = (spObj.size() > ++spOrder) ? spOrder++ : 0;
+                    MapMarkerManager.GetInstance().HighlightRoute(spObj.get(spOrder).Path);
+                    int totalTime = spObj.get(spOrder).Criteria[0];
                     resultTimeView.setText(String.format("Время поездки %d минут %d секунд",
-                            totaltime / 60, totaltime % 60));
+                            totalTime / 60, totalTime % 60));
                 } else
                     resultTimeView.setText("Пути не найдено");
             }
@@ -108,7 +115,7 @@ public class MapsActivity extends FragmentActivity implements
         closeResultButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 findViewById(R.id.total_route_time_layout).setVisibility(View.GONE);
-                //_markerManager.RestoreHighlight();
+                MapMarkerManager.GetInstance().RestoreHighlight();
             }
         });
     }
@@ -121,7 +128,6 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
         switch (item.getItemId()) {
             case R.id.map_type_none:
                 mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
@@ -146,16 +152,13 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        //mMap.setInfoWindowAdapter(new MarkerInfoWindowAdapter(this));
         mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style));
-
-        // Set last zoom
         lastZoom = mMap.getCameraPosition().zoom;
 
         // Add idle camera listener
         mMap.setOnCameraIdleListener(this);
         mMap.setOnMarkerClickListener(this);
+        mMap.setOnPolylineClickListener(this);
 
         // Create marker manager
         GraphManager.GetInstance().SetContext(this);
@@ -180,23 +183,36 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        GraphNode node = (GraphNode)marker.getTag();
+        if (node == null) {
+            Log.d("ERROR", "Null GraphNode marker.");
+            return false;
+        }
         if (toButtonClick)
         {
             Button toNodeButton = (Button) findViewById(R.id.to_node_button);
-            toNodeButton.setText(marker.getTitle());
-            toNodeId = (int)marker.getTag();
+            toNodeButton.setText(node.Name);
+            toNodeId = node.Id;
         } else if (fromButtonClick)
         {
             Button fromNodeButton = (Button) findViewById(R.id.from_node_button);
-            fromNodeButton.setText(marker.getTitle());
-            fromNodeId = (int)marker.getTag();
+            fromNodeButton.setText(node.Name);
+            fromNodeId = node.Id;
         }
-        Toast.makeText(this, marker.getTitle(), 10).show();
+
+        StringBuilder sb = new StringBuilder();
+        for (GraphPath path: node.Paths)
+            sb.append(String.format("%d-%d=%d|%d\n",
+                    path.FromNode.Id, path.ToNode.Id, path.Time, path.Delay));
+        Toast.makeText(this, sb, Toast.LENGTH_SHORT).show();
+
         return false;
     }
 
-    // TODO Move to Utils
-    public float Clamp(float val, float min, float max) {
-        return Math.max(min, Math.min(max, val));
+    @Override
+    public void onPolylineClick(Polyline polyline) {
+        GraphPath path = MapMarkerManager.GetInstance().GetGraphPathByPolyline(polyline);
+        if (path != null && path.Delay != 0)
+            Toast.makeText(this, ""+path.Delay, Toast.LENGTH_SHORT).show();
     }
 }

@@ -4723,8 +4723,8 @@
         "StopId":261,
         "TripId":9,
         "StopSequence":3,
-        "ArrivalTime":1401,
-        "DepartureTime":1401
+        "ArrivalTime":1143,
+        "DepartureTime":1143
       },
 
       {
@@ -4806,56 +4806,56 @@
         "DepartureTime":1042
       },
       {
-        "StopId":245,
+        "StopId":262,
         "TripId":1,
         "StopSequence":1,
         "ArrivalTime":1047,
         "DepartureTime":1047
       },
       {
-        "StopId":246,
+        "StopId":245,
         "TripId":1,
         "StopSequence":2,
         "ArrivalTime":1050,
         "DepartureTime":1050
       },
       {
-        "StopId":247,
+        "StopId":246,
         "TripId":1,
         "StopSequence":3,
         "ArrivalTime":1053,
         "DepartureTime":1053
       },
       {
-        "StopId":248,
+        "StopId":247,
         "TripId":1,
         "StopSequence":4,
         "ArrivalTime":1057,
         "DepartureTime":1057
       },
       {
-        "StopId":249,
+        "StopId":248,
         "TripId":1,
         "StopSequence":5,
         "ArrivalTime":1059,
         "DepartureTime":1059
       },
       {
-        "StopId":250,
+        "StopId":249,
         "TripId":1,
         "StopSequence":6,
         "ArrivalTime":1061,
         "DepartureTime":1061
       },
       {
-        "StopId":251,
+        "StopId":250,
         "TripId":1,
         "StopSequence":7,
         "ArrivalTime":1064,
         "DepartureTime":1064
       },
       {
-        "StopId":262,
+        "StopId":251,
         "TripId":1,
         "StopSequence":8,
         "ArrivalTime":1066,
@@ -4870,56 +4870,56 @@
         "DepartureTime":1048
       },
       {
-        "StopId":245,
+        "StopId":262,
         "TripId":2,
         "StopSequence":1,
         "ArrivalTime":1054,
         "DepartureTime":1054
       },
       {
-        "StopId":246,
+        "StopId":245,
         "TripId":2,
         "StopSequence":2,
         "ArrivalTime":1057,
         "DepartureTime":1057
       },
       {
-        "StopId":247,
+        "StopId":246,
         "TripId":2,
         "StopSequence":3,
         "ArrivalTime":1060,
         "DepartureTime":1060
       },
       {
-        "StopId":248,
+        "StopId":247,
         "TripId":2,
         "StopSequence":4,
         "ArrivalTime":1064,
         "DepartureTime":1064
       },
       {
-        "StopId":249,
+        "StopId":248,
         "TripId":2,
         "StopSequence":5,
         "ArrivalTime":1066,
         "DepartureTime":1066
       },
       {
-        "StopId":250,
+        "StopId":249,
         "TripId":2,
         "StopSequence":6,
         "ArrivalTime":1068,
         "DepartureTime":1068
       },
       {
-        "StopId":251,
+        "StopId":250,
         "TripId":2,
         "StopSequence":7,
         "ArrivalTime":1071,
         "DepartureTime":1071
       },
       {
-        "StopId":262,
+        "StopId":251,
         "TripId":2,
         "StopSequence":8,
         "ArrivalTime":1073,
@@ -4934,56 +4934,56 @@
         "DepartureTime":1054
       },
       {
-        "StopId":245,
+        "StopId":262,
         "TripId":3,
         "StopSequence":1,
         "ArrivalTime":1059,
         "DepartureTime":1059
       },
       {
-        "StopId":246,
+        "StopId":245,
         "TripId":3,
         "StopSequence":2,
         "ArrivalTime":1062,
         "DepartureTime":1062
       },
       {
-        "StopId":247,
+        "StopId":246,
         "TripId":3,
         "StopSequence":3,
         "ArrivalTime":1065,
         "DepartureTime":1065
       },
       {
-        "StopId":248,
+        "StopId":247,
         "TripId":3,
         "StopSequence":4,
         "ArrivalTime":1069,
         "DepartureTime":1069
       },
       {
-        "StopId":249,
+        "StopId":248,
         "TripId":3,
         "StopSequence":5,
         "ArrivalTime":1071,
         "DepartureTime":1071
       },
       {
-        "StopId":250,
+        "StopId":249,
         "TripId":3,
         "StopSequence":6,
         "ArrivalTime":1073,
         "DepartureTime":1073
       },
       {
-        "StopId":251,
+        "StopId":250,
         "TripId":3,
         "StopSequence":7,
         "ArrivalTime":1076,
         "DepartureTime":1076
       },
       {
-        "StopId":262,
+        "StopId":251,
         "TripId":3,
         "StopSequence":8,
         "ArrivalTime":1078,
@@ -4998,56 +4998,56 @@
         "DepartureTime":1067
       },
       {
-        "StopId":245,
+        "StopId":262,
         "TripId":4,
         "StopSequence":1,
         "ArrivalTime":1072,
         "DepartureTime":1072
       },
       {
-        "StopId":246,
+        "StopId":245,
         "TripId":4,
         "StopSequence":2,
         "ArrivalTime":1075,
         "DepartureTime":1075
       },
       {
-        "StopId":247,
+        "StopId":246,
         "TripId":4,
         "StopSequence":3,
         "ArrivalTime":1078,
         "DepartureTime":1078
       },
       {
-        "StopId":248,
+        "StopId":247,
         "TripId":4,
         "StopSequence":4,
         "ArrivalTime":1082,
         "DepartureTime":1082
       },
       {
-        "StopId":249,
+        "StopId":248,
         "TripId":4,
         "StopSequence":5,
         "ArrivalTime":1084,
         "DepartureTime":1084
       },
       {
-        "StopId":250,
+        "StopId":249,
         "TripId":4,
         "StopSequence":6,
         "ArrivalTime":1086,
         "DepartureTime":1086
       },
       {
-        "StopId":251,
+        "StopId":250,
         "TripId":4,
         "StopSequence":7,
         "ArrivalTime":1089,
         "DepartureTime":1089
       },
       {
-        "StopId":262,
+        "StopId":251,
         "TripId":4,
         "StopSequence":8,
         "ArrivalTime":1091,
@@ -5062,62 +5062,61 @@
         "DepartureTime":1080
       },
       {
-        "StopId":245,
+        "StopId":262,
         "TripId":5,
         "StopSequence":1,
         "ArrivalTime":1085,
         "DepartureTime":1085
       },
       {
-        "StopId":246,
+        "StopId":245,
         "TripId":5,
         "StopSequence":2,
         "ArrivalTime":1088,
         "DepartureTime":1088
       },
       {
-        "StopId":247,
+        "StopId":246,
         "TripId":5,
         "StopSequence":3,
         "ArrivalTime":1091,
         "DepartureTime":1091
       },
       {
-        "StopId":248,
+        "StopId":247,
         "TripId":5,
         "StopSequence":4,
         "ArrivalTime":1095,
         "DepartureTime":1095
       },
       {
-        "StopId":249,
+        "StopId":248,
         "TripId":5,
         "StopSequence":5,
         "ArrivalTime":1097,
         "DepartureTime":1097
       },
       {
-        "StopId":250,
+        "StopId":249,
         "TripId":5,
         "StopSequence":6,
         "ArrivalTime":1099,
         "DepartureTime":1099
       },
       {
-        "StopId":251,
+        "StopId":250,
         "TripId":5,
         "StopSequence":7,
         "ArrivalTime":1102,
         "DepartureTime":1102
       },
       {
-        "StopId":262,
+        "StopId":251,
         "TripId":5,
         "StopSequence":8,
         "ArrivalTime":1104,
         "DepartureTime":1104
       }
-
     ],
     "Calendars":[
       {
@@ -5216,9 +5215,79 @@
   "Transfers":
   [
     {
+      "FromNodeId":251,
+      "ToNodeId":50,
+      "Time":120
+    },
+    {
+      "FromNodeId":225,
+      "ToNodeId":261,
+      "Time":240
+    },
+    {
+      "FromNodeId":107,
+      "ToNodeId":257,
+      "Time":240
+    },
+    {
+      "FromNodeId":197,
+      "ToNodeId":256,
+      "Time":240
+    },
+    {
       "FromNodeId":263,
       "ToNodeId":172,
       "Time":300
+    },
+    {
+      "FromNodeId":253,
+      "ToNodeId":95,
+      "Time":300
+    },
+    {
+      "FromNodeId":253,
+      "ToNodeId":96,
+      "Time":300
+    },
+    {
+      "FromNodeId":253,
+      "ToNodeId":231,
+      "Time":360
+    },
+    {
+      "FromNodeId":252,
+      "ToNodeId":78,
+      "Time":360
+    },
+    {
+      "FromNodeId":252,
+      "ToNodeId":79,
+      "Time":360
+    },
+    {
+      "FromNodeId":244,
+      "ToNodeId":79,
+      "Time":360
+    },
+    {
+      "FromNodeId":244,
+      "ToNodeId":78,
+      "Time":360
+    },
+    {
+      "FromNodeId":252,
+      "ToNodeId":244,
+      "Time":420
+    },
+    {
+      "FromNodeId":263,
+      "ToNodeId":250,
+      "Time":480
+    },
+    {
+      "FromNodeId":172,
+      "ToNodeId":250,
+      "Time":540
     }
   ]
 }

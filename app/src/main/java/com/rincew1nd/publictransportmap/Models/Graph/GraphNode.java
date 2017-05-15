@@ -17,7 +17,6 @@ public class GraphNode {
     public int RouteId;
     public float Lat;
     public float Lon;
-    public int Delay;
     public int NodeColor;
 
     // Связи с другими нодами
@@ -59,7 +58,25 @@ public class GraphNode {
         SetColor("FF00FF");
     }
 
-    private void SetColor(String color) {
+    public void SetColor(String color) {
         NodeColor = Color.parseColor("#"+color);
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!GraphNode.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+        final GraphNode other = (GraphNode) obj;
+
+        if (this.Type != other.Type || this.Id != other.Id ||
+            this.Name != other.Name || this.RouteId != other.RouteId){
+            return false;
+        }
+        return true;
     }
 }

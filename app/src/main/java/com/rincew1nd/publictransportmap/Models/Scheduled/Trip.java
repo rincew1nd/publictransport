@@ -1,8 +1,8 @@
 package com.rincew1nd.publictransportmap.Models.Scheduled;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
-public class Trip {
+public class Trip{
     public int Id;
     public int RouteId;
     public int CalendarId;
@@ -10,5 +10,5 @@ public class Trip {
     public Route Route;
     public Calendar Calendar;
 
-    public HashSet<StopTime> StopTimes = new HashSet<>();
+    public ArrayList<StopTime> StopTimes = new ArrayList<>();
 }

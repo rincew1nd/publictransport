@@ -1,6 +1,7 @@
 package com.rincew1nd.publictransportmap.GraphManager;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphPath;
@@ -10,11 +11,13 @@ import com.rincew1nd.publictransportmap.Models.Scheduled.StopTime;
 import com.rincew1nd.publictransportmap.Models.Scheduled.Trip;
 import com.rincew1nd.publictransportmap.Models.Transfers.Transfer;
 import com.rincew1nd.publictransportmap.Models.Transport;
+import com.rincew1nd.publictransportmap.Models.Unscheduled.Path;
 import com.rincew1nd.publictransportmap.Models.Unscheduled.Station;
 import com.rincew1nd.publictransportmap.Models.WalkingPaths.Node;
 import com.rincew1nd.publictransportmap.Utils.JsonSerializer;
 import com.rincew1nd.publictransportmap.R;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -47,8 +50,7 @@ public class GraphManager {
         TransportGraph = reader.constructUsingGson(Transport.class);
     }
 
-    public void LinkStructures()
-    {
+    public void LinkStructures() {
         // WalkingPaths
         for (com.rincew1nd.publictransportmap.Models.WalkingPaths.Path path:
                 TransportGraph.WalkingPaths.Paths)
@@ -99,6 +101,8 @@ public class GraphManager {
             for (StopTime stopTime: TransportGraph.ScheduledTransport.StopTimes)
                 if (stopTime.TripId == trip.Id)
                     trip.StopTimes.add(stopTime);
+
+            Collections.sort(trip.StopTimes);
         }
 
         // UnscheduledTransport
@@ -137,13 +141,46 @@ public class GraphManager {
             Nodes.put(stop.Id, new GraphNode(stop));
 
         for (com.rincew1nd.publictransportmap.Models.Unscheduled.Path path:
-                TransportGraph.UnscheduledTransport.Paths)
-            Paths.add(new GraphPath(path));
+                TransportGraph.UnscheduledTransport.Paths) {
+            AddPath(new GraphPath(path));
+            AddPath(new GraphPath(path).Reverse());
+        }
         for (com.rincew1nd.publictransportmap.Models.WalkingPaths.Path path:
-                TransportGraph.WalkingPaths.Paths)
-            Paths.add(new GraphPath(path));
-        for (Transfer transfer: TransportGraph.Transfers)
-            Paths.add(new GraphPath(transfer));
+                TransportGraph.WalkingPaths.Paths) {
+            AddPath(new GraphPath(path));
+            AddPath(new GraphPath(path).Reverse());
+        }
+        for (Transfer transfer: TransportGraph.Transfers) {
+            AddPath(new GraphPath(transfer));
+            AddPath(new GraphPath(transfer).Reverse());
+        }
+
+        for (Trip trip: TransportGraph.ScheduledTransport.Trips)
+            for (int i = 1; i < trip.StopTimes.size(); i++)
+            {
+                if (trip.StopTimes.get(i-1).StopId == 256 && trip.StopTimes.get(i).StopId == 261)
+                    Log.d("TEST", "TEST");
+                Paths.add(new GraphPath(trip.StopTimes.get(i-1), trip.StopTimes.get(i)));
+            }
+
+        for (GraphPath path: Paths)
+            path.FromNode.Paths.add(path);
+    }
+
+    public void AddPath(GraphPath path) {
+        if (IsUnique(path))
+            Paths.add(path);
+        else
+            Log.d("NOT UNIQUE", String.format("%s(%d) - %s(%d)",
+                path.FromNode.Name, path.FromNode.Id, path.ToNode.Name, path.ToNode.Id)
+            );
+    }
+
+    public boolean IsUnique(GraphPath path) {
+        for (GraphPath gPath: Paths)
+            if (path == gPath)
+                return false;
+        return true;
     }
 
     public GraphNode GetNodeById(int nodeId) {
