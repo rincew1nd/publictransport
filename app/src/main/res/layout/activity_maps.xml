@@ -10,7 +10,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:id="@+id/map"
-        tools:context="com.rincew1nd.publictransportmap.map.MapsActivity"
+        tools:context="com.rincew1nd.publictransportmap.Activities.MapsActivity"
         android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
     <LinearLayout

@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Public Transport Map</string>
     <string name="title_activity_maps">Map</string>
+    <string name="path_result_string" formatted="false">"Время поездки %d часов %d минут %d секунд"</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
 </resources>

@@ -163,7 +163,7 @@ public class GraphManager {
             path.FromNode.Paths.add(path);
     }
 
-    public void AddPath(GraphPath path) {
+    private void AddPath(GraphPath path) {
         if (IsUnique(path))
             Paths.add(path);
         else
@@ -172,7 +172,7 @@ public class GraphManager {
             );
     }
 
-    public boolean IsUnique(GraphPath path) {
+    private boolean IsUnique(GraphPath path) {
         for (GraphPath gPath: Paths)
             if (path == gPath)
                 return false;

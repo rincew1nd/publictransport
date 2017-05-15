@@ -81,10 +81,10 @@ public class ShortPathManager {
         // TODO начальная стоимость поездки
         int[] weight = new int[] {0, 0, 10};
 
-        Log.d("SEARCHSTART", "2345");
+        Log.d("SEARCH_START", " ");
         DepthSearch(path, weight, _fromNode, depth, true);
         Collections.sort(_algorithmResult);
-        Log.d("SEARCHEND", "2345");
+        Log.d("SEARCH_END", " ");
         return _algorithmResult;
     }
 
@@ -106,6 +106,8 @@ public class ShortPathManager {
                 (gPath.ToNode.Type != _toNode.Type ||
                  gPath.ToNode.RouteId != _toNode.RouteId))
                     continue;
+            if (ContainsTransferToVisitedNode(lastNode, path))
+                continue;
             if (gPath.Delay < 0)
                 continue;
 
@@ -126,12 +128,15 @@ public class ShortPathManager {
         }
     }
 
-    public String GetPathString(ArrayList<Integer> array) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(array.size()+" | ");
-        for (int i: array)
-            sb.append(GraphManager.GetInstance().GetNodeById(i).Name + " ");
-        return sb.toString();
+    public boolean ContainsTransferToVisitedNode(GraphNode gNode, ArrayList<Integer> path)
+    {
+        if (path.size() > 2)
+            for (GraphPath gPath: gNode.Paths) {
+                if (gPath.ToNode.Id != path.get(path.size()-2))
+                    if(path.contains(gPath.ToNode.Id))
+                        return true;
+            }
+        return false;
     }
 
 //    // Инициация оптимизации графа

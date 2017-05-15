@@ -1,4 +1,4 @@
-package com.rincew1nd.publictransportmap.MarkersNodes;
+package com.rincew1nd.publictransportmap.MapElements;
 
 import android.content.Context;
 import android.view.LayoutInflater;
