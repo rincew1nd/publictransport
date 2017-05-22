@@ -5,7 +5,9 @@ import java.util.HashMap;
 public class Route {
     public int Id;
     public String Name;
-    public int Type;
+
+    // TODO добавить поддержку цвета
+    public String Color;
 
     public HashMap<Integer, Trip> Trips = new HashMap<>();
 }

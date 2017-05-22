@@ -2,9 +2,16 @@ package com.rincew1nd.publictransportmap.Listeners;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,8 +20,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.rincew1nd.publictransportmap.Activities.MapsActivity;
 import com.rincew1nd.publictransportmap.MapElements.MapMarkerManager;
+import com.rincew1nd.publictransportmap.MapElements.MarkerPopup;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphPath;
+import com.rincew1nd.publictransportmap.Models.Settings;
 import com.rincew1nd.publictransportmap.R;
 import com.rincew1nd.publictransportmap.ShortPath.ShortPathManager;
 import com.rincew1nd.publictransportmap.ShortPath.ShortestPathObj;
@@ -29,26 +38,17 @@ public class MapListeners implements
 
     private MapsActivity _context;
     private GoogleMap _map;
+    private MarkerPopup _markerPopup;
 
-    private Button _fromNodeButton;
-    private Button _toNodeButton;
     private TextView _resultTimeView;
-    private Button _calculateButton;
-    private Button _closeResultButton;
-
-    public int Depth;
     private float _lastZoom;
-    private boolean _fromButtonClick;
-    private boolean _toButtonClick;
-    private int _fromNodeId;
-    private int _toNodeId;
 
     private ArrayList<ShortestPathObj> _spObj;
     private int _spOrder;
 
     public MapListeners(MapsActivity context) {
         _context = context;
-        Depth = 2;
+        _markerPopup = new MarkerPopup(context);
     }
 
     public void SetGoogleMap(GoogleMap map) {
@@ -67,45 +67,23 @@ public class MapListeners implements
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        GraphNode node = (GraphNode)marker.getTag();
-        if (node == null) {
-            Log.d("ERROR", "Null GraphNode marker.");
-            return false;
-        }
-        if (_toButtonClick)
-        {
-            Button toNodeButton = (Button) _context.findViewById(R.id.to_node_button);
-            toNodeButton.setText(node.Name);
-            _toNodeId = node.Id;
-        } else if (_fromButtonClick)
-        {
-            Button fromNodeButton = (Button) _context.findViewById(R.id.from_node_button);
-            fromNodeButton.setText(node.Name);
-            _fromNodeId = node.Id;
-        }
-        //StringBuilder sb = new StringBuilder();
-        //for (GraphPath path: node.Paths)
-        //    sb.append(String.format("%d-%d=%d|%d\n",
-        //            path.FromNode.Id, path.ToNode.Id, path.Time, path.Delay));
-        //Toast.makeText(_context, sb, Toast.LENGTH_SHORT).show();
+        _markerPopup.Show(marker);
         return false;
     }
 
     @Override
     public void onPolylineClick(Polyline polyline) {
-        GraphPath path = MapMarkerManager.GetInstance().GetGraphPathByPolyline(polyline);
-        Toast.makeText(_context, path.IsTransfer+" "+path.Time+" "+path.Delay, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId())
         {
-            case R.id.from_node_button:
-                FromToButtonClick(true, false);
+            case R.id.from_station_button:
+                //TODO Вызов списка станций
                 break;
-            case R.id.to_node_button:
-                FromToButtonClick(false, true);
+            case R.id.to_station_button:
+                //TODO Вызов списка станций
                 break;
             case R.id.calculate_button:
                 FindPaths();
@@ -122,33 +100,19 @@ public class MapListeners implements
     }
 
     public void LayoutButtonsEvents() {
-        _fromNodeButton = (Button) _context.findViewById(R.id.from_node_button);
-        _toNodeButton = (Button) _context.findViewById(R.id.to_node_button);
         _resultTimeView = (TextView)_context.findViewById(R.id.total_route_time);
-        _calculateButton = (Button) _context.findViewById(R.id.calculate_button);
-        _closeResultButton = (Button) _context.findViewById(R.id.close_total_route_time);
-
-        _fromNodeButton.setOnClickListener(this);
-        _toNodeButton.setOnClickListener(this);
-        _calculateButton.setOnClickListener(this);
         _resultTimeView.setOnClickListener(this);
-        _closeResultButton.setOnClickListener(this);
-    }
 
-    public void FromToButtonClick(boolean from, boolean to) {
-        // TODO цвета в стринг константы
-        _fromButtonClick = (from) && !_fromButtonClick;
-        _toButtonClick = (to) && !_toButtonClick;
-        _toNodeButton.setBackgroundColor(Color.parseColor((_toButtonClick) ?
-                "#76778b" : "#b1b7ff"));
-        _fromNodeButton.setBackgroundColor(Color.parseColor((_fromButtonClick) ?
-                "#76778b" : "#b1b7ff"));
+        _context.findViewById(R.id.from_station_button).setOnClickListener(this);
+        _context.findViewById(R.id.to_station_button).setOnClickListener(this);
+        _context.findViewById(R.id.calculate_button).setOnClickListener(this);
+        _context.findViewById(R.id.close_total_route_time).setOnClickListener(this);
     }
 
     public void FindPaths() {
-        if (_fromNodeId != 0 && _toNodeId != 0)
+        if (Settings.FromStationId >= 0 && Settings.ToStationId >= 0)
         {
-            _spObj = ShortPathManager.GetInstance().FindShortestPaths(_fromNodeId, _toNodeId, Depth);
+            _spObj = ShortPathManager.GetInstance().FindShortestPaths();
             _spOrder = 0;
             SetResultText();
             _context.findViewById(R.id.total_route_time_layout).setVisibility(View.VISIBLE);

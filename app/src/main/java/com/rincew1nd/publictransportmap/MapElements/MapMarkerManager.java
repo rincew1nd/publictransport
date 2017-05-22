@@ -23,6 +23,7 @@ import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphPath;
 import com.rincew1nd.publictransportmap.R;
+import com.rincew1nd.publictransportmap.ShortPath.GraphOptimization;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +55,10 @@ public class MapMarkerManager {
         _context = context;
     }
     public void SetUpMarkersAndPaths(GoogleMap mMap) {
-        for (GraphNode node: _graphManager.Nodes.values()) {
+        //GraphOptimization go = new GraphOptimization();
+        //go.OptimizeGraph(400);
+
+        for (GraphNode node: _graphManager.Nodes.values()) { //go.OptimizedNodes.values()) {
             Bitmap mapMarkerIcon = GenerateBitmapIcon(node.Name, node.NodeColor);
             MarkerOptions markerOptions = new MarkerOptions()
                     .icon(BitmapDescriptorFactory.fromBitmap(mapMarkerIcon))
@@ -66,7 +70,7 @@ public class MapMarkerManager {
             _markersImage.put(mapMarker, mapMarkerIcon);
         }
 
-        for (GraphPath path: _graphManager.Paths) {
+        for (GraphPath path: _graphManager.Paths) { //go.OptimizedPaths) {
             PolylineOptions polylineOptions = new PolylineOptions()
                     .clickable(true)
                     .add(new LatLng(path.FromNode.Lat, path.FromNode.Lon))

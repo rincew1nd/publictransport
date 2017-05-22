@@ -48,18 +48,18 @@
             android:gravity="center">
 
             <Button android:layout_width="0dp"
-                android:id="@+id/from_node_button"
+                android:id="@+id/from_station_button"
                 android:layout_height="30dp"
                 android:layout_weight="1"
-                android:background="@drawable/choose_station_menu_button"
+                android:background="@drawable/marker_infowindow_button"
                 android:text="Отсюда" />
 
             <Button
-                android:id="@+id/to_node_button"
+                android:id="@+id/to_station_button"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
-                android:background="@drawable/choose_station_menu_button"
+                android:background="@drawable/marker_infowindow_button"
                 android:text="Сюда" />
         </LinearLayout>
 
@@ -67,7 +67,7 @@
             android:id="@+id/calculate_button"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:background="@drawable/choose_station_menu_button"
+            android:background="@drawable/marker_infowindow_button"
             android:text="Расчитать" />
     </LinearLayout>
 </LinearLayout>

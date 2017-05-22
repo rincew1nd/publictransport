@@ -2,11 +2,8 @@ package com.rincew1nd.publictransportmap.Activities;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,15 +13,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
 import com.rincew1nd.publictransportmap.Listeners.MapListeners;
-import com.rincew1nd.publictransportmap.Listeners.NavigationDrawerListener;
 import com.rincew1nd.publictransportmap.MapElements.MapMarkerManager;
+import com.rincew1nd.publictransportmap.Models.Settings;
 import com.rincew1nd.publictransportmap.R;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback{
 
     private GoogleMap mMap;
     private MapListeners _mapListeners;
-    private NavigationDrawerListener _navigationDrawerListeners;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +30,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-
-        //_navigationDrawerListeners = new NavigationDrawerListener(this);
 
         _mapListeners = new MapListeners(this);
         _mapListeners.LayoutButtonsEvents();
@@ -90,13 +83,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_retro));
                 return true;
             case R.id.depth_2:
-                _mapListeners.Depth = 2;
+                Settings.SearchDepth = 2;
                 return true;
             case R.id.depth_3:
-                _mapListeners.Depth = 3;
+                Settings.SearchDepth = 3;
                 return true;
             case R.id.depth_4:
-                _mapListeners.Depth = 4;
+                Settings.SearchDepth = 4;
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
