@@ -9,6 +9,7 @@ import com.rincew1nd.publictransportmap.Models.Transfers.Transfer;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class GraphPath {
 
@@ -26,17 +27,19 @@ public class GraphPath {
 
     public ArrayList<LatLng> MidPoints;
 
-    public GraphPath (GraphNodeType type, int from, int to, int time, int cost) {
+    public GraphPath (GraphNodeType type, int from, int to, int time, int cost,
+                      HashMap<Integer, GraphNode> graph) {
         Type = type;
-        FromNode = GraphManager.GetInstance().GetNodeById(from);
-        ToNode = GraphManager.GetInstance().GetNodeById(to);
+        FromNode = graph.get(from);
+        ToNode = graph.get(to);
 
         Time = time;
         Cost = cost;
     }
 
     public GraphPath (com.rincew1nd.publictransportmap.Models.Unscheduled.Path path) {
-        this(GraphNodeType.Unscheduled, path.FromNodeId, path.ToNodeId, path.Time, 0);
+        this(GraphNodeType.Unscheduled, path.FromNodeId, path.ToNodeId, path.Time, 0,
+                GraphManager.GetInstance().Nodes);
         IsTransfer = (path.FromNode.RouteId != path.ToNode.RouteId || path.RouteId == -1);
         if (!(IsTransfer || FromNode.RouteId != ToNode.RouteId)) {
             String color = null;
@@ -50,17 +53,20 @@ public class GraphPath {
     }
 
     public GraphPath (com.rincew1nd.publictransportmap.Models.WalkingPaths.Path path) {
-        this(GraphNodeType.Walking, path.FromNodeId, path.ToNodeId, path.Time, 0);
+        this(GraphNodeType.Walking, path.FromNodeId, path.ToNodeId, path.Time, 0,
+                GraphManager.GetInstance().Nodes);
         SetColor("FF0000");
     }
 
     public GraphPath (Transfer transfer) {
-        this(GraphNodeType.None, transfer.FromNodeId, transfer.ToNodeId, transfer.Time, transfer.Cost);
+        this(GraphNodeType.None, transfer.FromNodeId, transfer.ToNodeId, transfer.Time,
+                transfer.Cost, GraphManager.GetInstance().Nodes);
         IsTransfer = true;
     }
 
     public GraphPath (StopTime from, StopTime to) {
-        this(GraphNodeType.Scheduled, from.StopId, to.StopId, (to.ArrivalTime - from.DepartureTime)*60, 32);
+        this(GraphNodeType.Scheduled, from.StopId, to.StopId,
+                (to.ArrivalTime - from.DepartureTime)*60, 32, GraphManager.GetInstance().Nodes);
         int time = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)*60+
                    Calendar.getInstance().get(Calendar.MINUTE);
         Delay = (from.DepartureTime - time)*60;
@@ -91,19 +97,27 @@ public class GraphPath {
         }
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (!GraphPath.class.isAssignableFrom(obj.getClass())) {
-            return false;
-        }
-        final GraphPath other = (GraphPath) obj;
-
-        if (this.FromNode != other.FromNode || this.ToNode != other.FromNode) {
-            return false;
-        }
-        return true;
-    }
+//    @Override
+//    public int hashCode() {
+//        StringBuilder sb = new StringBuilder();
+//        sb.append(this.FromNode.hashCode());
+//        sb.append(this.ToNode.hashCode());
+//        return sb.toString().hashCode();
+//    }
+//
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (obj == null) {
+//            return false;
+//        }
+//        if (!GraphPath.class.isAssignableFrom(obj.getClass())) {
+//            return false;
+//        }
+//        final GraphPath other = (GraphPath) obj;
+//
+//        if (this.FromNode.Id != other.FromNode.Id || this.ToNode.Id != other.FromNode.Id) {
+//            return false;
+//        }
+//        return true;
+//    }
 }

@@ -3,37 +3,53 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/marker_infowindow_border"
     android:gravity="center"
     android:baselineAligned="false"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/marker_infowindow_station"
-        style="@style/StationOutline"
+        style="@style/PopupTextStyle"
+        android:background="@drawable/marker_infowindow_border"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:text="Улица Академика Янгеля"
+        android:layout_marginBottom="2dp"
+        android:padding="8dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center">
-
-        <Button android:layout_width="0dp"
-            android:id="@+id/from_node_click"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:background="@drawable/marker_infowindow_leftbutton"
-            android:text="Сюда" />
+        android:gravity="center"
+        android:layout_marginBottom="2dp">
 
         <Button
-            android:id="@+id/to_node_click"
-            android:layout_width="0dp"
+            android:id="@+id/from_station_button"
+            style="@style/PopupTextStyle"
+            android:background="@drawable/marker_infowindow_button"
             android:layout_height="30dp"
+            android:layout_width="0dp"
             android:layout_weight="1"
-            android:background="@drawable/marker_infowindow_rightbutton"
             android:text="Отсюда" />
+
+        <Button
+            android:id="@+id/to_station_button"
+            style="@style/PopupTextStyle"
+            android:background="@drawable/marker_infowindow_button"
+            android:layout_height="30dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="Сюда" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/change_station_button"
+        style="@style/PopupTextStyle"
+        android:background="@drawable/marker_infowindow_button"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="Изменить" />
+
 </LinearLayout>

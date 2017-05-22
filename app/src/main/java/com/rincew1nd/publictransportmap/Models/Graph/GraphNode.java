@@ -23,6 +23,8 @@ public class GraphNode {
     public HashSet<GraphPath> Paths;
     // Ноды вошедшие в оптимизированную ноду
     public HashSet<GraphNode> OptimizedNodes;
+    public boolean IsOptimizable = true;
+    public int OptimizedTime = 0;
 
     public GraphNode (GraphNodeType type, int id, String name, float lat, float lon) {
         Type = type;
@@ -62,6 +64,14 @@ public class GraphNode {
         NodeColor = Color.parseColor("#"+color);
     }
 
+    @Override
+    public int hashCode() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.Id);
+        sb.append(this.RouteId);
+        sb.append(this.Name);
+        return sb.toString().hashCode();
+    }
 
     @Override
     public boolean equals(Object obj) {

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphPath;
+import com.rincew1nd.publictransportmap.Models.Settings;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +13,6 @@ import java.util.Collections;
 public class ShortPathManager {
 
     private static ShortPathManager _instance;
-    //private static HashMap<Integer, GraphNode> _optimizedGraph;
 
     private GraphNode _fromNode;
     private GraphNode _toNode;
@@ -67,30 +67,29 @@ public class ShortPathManager {
     //    return resultPath;
     //}
 
-    public ArrayList<ShortestPathObj> FindShortestPaths(int fromNodeId, int toNodeId, int depth) {
+    public ArrayList<ShortestPathObj> FindShortestPaths() {
         _algorithmResult = new ArrayList<>();
 
         //RecoverOptimizedNodes(algorithmReadyGraph, fromNodeId, toNodeId);
 
-        _fromNode = GraphManager.GetInstance().Nodes.get(fromNodeId);
-        _toNode = GraphManager.GetInstance().Nodes.get(toNodeId);
+        _fromNode = GraphManager.GetInstance().Nodes.get(Settings.FromStationId);
+        _toNode = GraphManager.GetInstance().Nodes.get(Settings.ToStationId);
         ArrayList<Integer> path = new ArrayList<>();
 
         path.add(_fromNode.Id);
         // Создаём вес (время, пересадки, стоимость)
         // TODO начальная стоимость поездки
-        int[] weight = new int[] {0, 0, 10};
+        int[] weight = new int[] {0, 0, 0};
 
-        Log.d("SEARCHSTART", "2345");
-        DepthSearch(path, weight, _fromNode, depth, true);
+        Log.d("SEARCH_START", " ");
+        DepthSearch(path, weight, _fromNode, true);
         Collections.sort(_algorithmResult);
-        Log.d("SEARCHEND", "2345");
+        Log.d("SEARCH_END", " ");
         return _algorithmResult;
     }
 
-    // Depth-First Search
-    private void DepthSearch(ArrayList<Integer> path, int[] weight, GraphNode lastNode,
-                             int depth, boolean addDelay) {
+    private void DepthSearch(ArrayList<Integer> path, int[] weight,
+                             GraphNode lastNode, boolean addDelay) {
         boolean addDelayCopy = false;
         if (lastNode.Id == _toNode.Id)
         {
@@ -100,14 +99,17 @@ public class ShortPathManager {
         }
 
         for(GraphPath gPath: lastNode.Paths) {
-            if (path.contains(gPath.ToNode.Id) || weight[1] > depth)
+            if (path.contains(gPath.ToNode.Id) || weight[1] > Settings.SearchDepth)
                 continue;
-            if (weight[1] == depth &&
+            if (weight[1] == Settings.SearchDepth &&
                 (gPath.ToNode.Type != _toNode.Type ||
                  gPath.ToNode.RouteId != _toNode.RouteId))
                     continue;
+            if (ContainsTransferToVisitedNode(lastNode, path))
+                continue;
             if (gPath.Delay < 0)
                 continue;
+            //TODO Пересадка на уже ушедшие электрички
 
             ArrayList newPath = new ArrayList<>(path);
             if (gPath.ToNode.OptimizedNodes.size() > 0)
@@ -120,185 +122,20 @@ public class ShortPathManager {
             if (gPath.IsTransfer) {
                 addDelayCopy = true;
                 newWeight[1]++;
-                newWeight[2] += 10;
+                newWeight[2] += gPath.Cost;
             }
-            DepthSearch(newPath, newWeight, gPath.ToNode, depth, addDelayCopy);
+            DepthSearch(newPath, newWeight, gPath.ToNode, addDelayCopy);
         }
     }
 
-    public String GetPathString(ArrayList<Integer> array) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(array.size()+" | ");
-        for (int i: array)
-            sb.append(GraphManager.GetInstance().GetNodeById(i).Name + " ");
-        return sb.toString();
+    public boolean ContainsTransferToVisitedNode(GraphNode gNode, ArrayList<Integer> path) {
+        if (path.size() > 2)
+            for (GraphPath gPath: gNode.Paths) {
+                if (gPath.ToNode.Id != path.get(path.size()-2))
+                    if(path.contains(gPath.ToNode.Id))
+                        return true;
+            }
+        return false;
     }
-
-//    // Инициация оптимизации графа
-//    private void OptimizeGraph(int maxId) {
-//        _optimizedGraph = new HashMap<>(_graphNodes);
-//        while (OptimizeCycle(_optimizedGraph, maxId))
-//            maxId++;
-//    }
-//
-//    // Цикл оптимизации
-//    private boolean OptimizeCycle(HashMap<Integer, GraphNode> optimizedGraph, int maxId) {
-//        for (GraphNode node: optimizedGraph.values())
-//        {
-//            if (node.Paths.size() > 2)
-//                continue;
-//
-//            for (GraphPath path: node.Paths) {
-//                if (FromOneRouteId(path))
-//                {
-//                    maxId++;
-//
-//                    Station newStation = new Station();
-//                    newStation.Id = maxId;
-//                    newStation.RouteId = node.RouteId;
-//                    GraphNode newGNode = new GraphNode(newStation);
-//                    newGNode.TotalTime = (int)path.Path.Time + path.ToNode.Delay;
-//
-//                    if (path.ToNode.Paths.size() > 1)
-//                    {
-//                        GraphNode neigbourNode = GetOtherPath(path.ToNode.Paths, path.FromNode.Id)
-//                                .ToNode;
-//                        GetPath(neigbourNode.Paths, path.ToNode.Id).ToNode = newGNode;
-//
-//                        Path newPath = new Path();
-//                        newPath.FromNode = maxId;
-//                        newPath.ToNode = neigbourNode.Id;
-//                        newPath.Color = path.Path.Color;
-//                        newPath.RouteId = path.Path.RouteId;
-//                        newPath.Cost = path.Path.Cost;
-//                        newPath.Time = path.Path.Time;
-//
-//                        GraphPath newGPath = new GraphPath(newPath,newGNode,neigbourNode);
-//                        newGNode.Paths.add(newGPath);
-//                    }
-//                    if (node.Paths.size() > 1)
-//                    {
-//                        GraphNode neigbourNode = GetOtherPath(node.Paths, path.ToNode.Id).ToNode;
-//                        GetPath(neigbourNode.Paths, node.Id).ToNode = newGNode;
-//
-//                        Path newPath = new Path();
-//                        newPath.FromNode = maxId;
-//                        newPath.ToNode = neigbourNode.Id;
-//                        newPath.Color = path.Path.Color;
-//                        newPath.RouteId = path.Path.RouteId;
-//                        newPath.Cost = path.Path.Cost;
-//                        newPath.Time = 0; //
-//
-//                        GraphPath newGPath = new GraphPath(newPath,newGNode,neigbourNode);
-//                        newGNode.Paths.add(newGPath);
-//                    }
-//
-//                    newGNode.OptimizedNodes = new HashSet<>();
-//                    newGNode.OptimizedNodes.addAll(path.FromNode.OptimizedNodes);
-//                    newGNode.OptimizedNodes.addAll(path.ToNode.OptimizedNodes);
-//                    newGNode.OptimizedNodes.add(path.FromNode.Id);
-//                    newGNode.OptimizedNodes.add(path.ToNode.Id);
-//
-//                    optimizedGraph.remove(path.FromNode.Id);
-//                    optimizedGraph.remove(path.ToNode.Id);
-//                    optimizedGraph.put(maxId, newGNode);
-//
-//                    if (newGNode.OptimizedNodes.size() < 1)
-//                        Log.d("FAIL", "From " + path.FromNode.Id + " To " + path.ToNode.Id);
-//
-//                    return true;
-//                }
-//            }
-//        }
-//
-//        return false;
-//    }
-//
-//    // Востановить оптимизированную ноду
-//    private void RecoverOptimizedNodes(HashMap<Integer, GraphNode> graph, int fromNode, int toNode) {
-//        boolean fromNodeExist = false;
-//        boolean toNodeExist = false;
-//        for (GraphNode node : graph.values()) {
-//            if (node.Id == fromNode)
-//                fromNodeExist = true;
-//            if (node.Id == toNode)
-//                toNodeExist = true;
-//        }
-//        try {
-//            if (!fromNodeExist)
-//                SplitOptimizedNodes(graph, fromNode);
-//            if (!toNodeExist)
-//                SplitOptimizedNodes(graph, toNode);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    // Разбить оптимизированную ноду
-//    private void SplitOptimizedNodes(HashMap<Integer, GraphNode> graph, int nodeId) throws Exception {
-//        GraphNode optimizedNode = null;
-//        for (GraphNode node: graph.values())
-//            if (node.OptimizedNodes.contains(nodeId))
-//                optimizedNode = node;
-//
-//        if (optimizedNode == null)
-//            throw new Exception("Station not finded");
-//
-//        for (int neededNodeId: optimizedNode.OptimizedNodes)
-//            if (_graphNodes.containsKey(neededNodeId))
-//                graph.put(neededNodeId, _graphNodes.get(neededNodeId));
-//
-//        // По всем путям оптимизированной ноды
-//        for (GraphPath path: optimizedNode.Paths) {
-//            // По всем путям ноды смежной с оптимизированной нодой
-//            for (GraphPath optimizedPath: path.ToNode.Paths) {
-//                // Если путь до оптимизированной ноды
-//                if (optimizedPath.ToNode.Id == optimizedNode.Id) {
-//                    // Получить старый путь
-//                    GraphPath oldGraphPath = null;
-//                    GraphNode oldGraphNode = _graphNodes.get(path.ToNode.Id);
-//                    for (GraphPath oldPath: oldGraphNode.Paths)
-//                        if (optimizedNode.OptimizedNodes.contains(oldPath.ToNode.Id))
-//                            oldGraphPath = oldPath;
-//                    path.ToNode.Paths.remove(optimizedPath);
-//                    path.ToNode.Paths.add(oldGraphPath);
-//                }
-//            }
-//        }
-//        graph.remove(optimizedNode.Id);
-//    }
-//
-//    // Принадлежат ли вершины и их соседи одному маршруту
-//    private boolean FromOneRouteId(GraphPath path) {
-//        if (path.FromNode.RouteId == path.ToNode.RouteId)
-//        {
-//            int routeId = path.Path.RouteId;
-//            for (GraphPath nPath: path.ToNode.Paths)
-//                if (nPath.ToNode.RouteId != routeId)
-//                    return false;
-//            for (GraphPath nPath: path.FromNode.Paths)
-//                if (nPath.ToNode.RouteId != routeId)
-//                    return false;
-//            return true;
-//        }
-//        else
-//            return false;
-//    }
-//
-//    // Получить путь отличный от nodeId
-//    private GraphPath GetOtherPath(HashSet<GraphPath> paths, int nodeId) {
-//        for (GraphPath resultPath: paths)
-//            if (resultPath.ToNode.Id != nodeId)
-//                return resultPath;
-//        return null;
-//    }
-//
-//    // Получить путь в nodeId
-//    private GraphPath GetPath(HashSet<GraphPath> paths, int nodeId) {
-//        for (GraphPath resultPath: paths)
-//            if (resultPath.ToNode.Id == nodeId)
-//                return resultPath;
-//        return null;
-//    }
 }
 
