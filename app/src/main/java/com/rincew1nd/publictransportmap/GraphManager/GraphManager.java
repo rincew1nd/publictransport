@@ -3,6 +3,7 @@ package com.rincew1nd.publictransportmap.GraphManager;
 import android.content.Context;
 import android.util.Log;
 
+import com.rincew1nd.publictransportmap.Activities.MapsActivity;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphPath;
 import com.rincew1nd.publictransportmap.Models.Scheduled.Calendar;
@@ -11,7 +12,6 @@ import com.rincew1nd.publictransportmap.Models.Scheduled.StopTime;
 import com.rincew1nd.publictransportmap.Models.Scheduled.Trip;
 import com.rincew1nd.publictransportmap.Models.Transfers.Transfer;
 import com.rincew1nd.publictransportmap.Models.Transport;
-import com.rincew1nd.publictransportmap.Models.Unscheduled.Path;
 import com.rincew1nd.publictransportmap.Models.Unscheduled.Station;
 import com.rincew1nd.publictransportmap.Models.WalkingPaths.Node;
 import com.rincew1nd.publictransportmap.Utils.JsonSerializer;
@@ -20,7 +20,6 @@ import com.rincew1nd.publictransportmap.R;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 public class GraphManager {
     private static GraphManager _instance;
@@ -34,12 +33,11 @@ public class GraphManager {
             _instance = new GraphManager();
         return _instance;
     }
-    public GraphManager SetContext(Context context) {
+    public void SetContext(MapsActivity context) {
         _context = context;
-        return this;
     }
 
-    private Context _context;
+    private MapsActivity _context;
     public Transport TransportGraph;
 
     public HashMap<Integer, GraphNode> Nodes;

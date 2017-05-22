@@ -1,15 +1,6 @@
 package com.rincew1nd.publictransportmap.MapElements;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.GradientDrawable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -19,11 +10,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
+import com.rincew1nd.publictransportmap.Activities.MapsActivity;
 import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphPath;
-import com.rincew1nd.publictransportmap.R;
-import com.rincew1nd.publictransportmap.ShortPath.GraphOptimization;
+import com.rincew1nd.publictransportmap.Utils.BitmapGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +23,7 @@ import java.util.Map;
 public class MapMarkerManager {
 
     private static MapMarkerManager instance;
-    private Context _context;
+    private MapsActivity _context;
 
     private GraphManager _graphManager;
     private HashMap<Integer, Marker> _markers;
@@ -45,21 +36,24 @@ public class MapMarkerManager {
         _markersImage = new HashMap<>();
         _polyPaths = new HashMap<>();
     }
+
     public static MapMarkerManager GetInstance() {
         if (instance == null)
             instance = new MapMarkerManager();
         return instance;
     }
 
-    public void SetContext(Context context) {
+    public void SetContext(MapsActivity context) {
         _context = context;
     }
+
     public void SetUpMarkersAndPaths(GoogleMap mMap) {
         //GraphOptimization go = new GraphOptimization();
         //go.OptimizeGraph(400);
 
         for (GraphNode node: _graphManager.Nodes.values()) { //go.OptimizedNodes.values()) {
-            Bitmap mapMarkerIcon = GenerateBitmapIcon(node.Name, node.NodeColor);
+            Bitmap mapMarkerIcon =
+                    BitmapGenerator.GenerateBitmapIcon(_context, node.Name, node.NodeColor);
             MarkerOptions markerOptions = new MarkerOptions()
                     .icon(BitmapDescriptorFactory.fromBitmap(mapMarkerIcon))
                     .position(new LatLng(node.Lat, node.Lon))
@@ -83,6 +77,7 @@ public class MapMarkerManager {
             _polyPaths.put(polyPath, path);
         }
     }
+
     public void UpdateMarkers(float zoom) {
         float markerSize = zoom*zoom / 400;
         for(Map.Entry<Marker, Bitmap> marker: _markersImage.entrySet()) {
@@ -93,30 +88,6 @@ public class MapMarkerManager {
                     true);
             marker.getKey().setIcon(BitmapDescriptorFactory.fromBitmap(scaledIcon));
         }
-    }
-
-    //TODO вынести в Utils
-    private Bitmap GenerateBitmapIcon(String text, int color) {
-        View customMarkerView =
-                ((LayoutInflater) _context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-                        .inflate(R.layout.custom_marker_view, null);
-        ImageView markerImage = (ImageView) customMarkerView.findViewById(R.id.marker_image);
-        TextView markerText = (TextView) customMarkerView.findViewById(R.id.marker_text);
-
-        ((GradientDrawable)markerImage.getBackground()).setColor(color);
-        markerText.setText(text);
-
-        customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
-        customMarkerView.buildDrawingCache();
-
-        Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(),
-                Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(returnedBitmap);
-        canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
-        customMarkerView.draw(canvas);
-        return returnedBitmap;
     }
 
     public void HighlightRoute(ArrayList<Integer> route) {
@@ -137,6 +108,7 @@ public class MapMarkerManager {
                         path.getKey().setVisible(true);
         }
     }
+
     public void RestoreHighlight() {
         for (Marker station : _markersImage.keySet())
             station.setVisible(true);

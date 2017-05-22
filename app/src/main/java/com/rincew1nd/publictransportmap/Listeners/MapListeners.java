@@ -1,28 +1,15 @@
 package com.rincew1nd.publictransportmap.Listeners;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.rincew1nd.publictransportmap.Activities.MapsActivity;
 import com.rincew1nd.publictransportmap.MapElements.MapMarkerManager;
-import com.rincew1nd.publictransportmap.MapElements.MarkerPopup;
-import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
-import com.rincew1nd.publictransportmap.Models.Graph.GraphPath;
+import com.rincew1nd.publictransportmap.Activities.MarkerPopup;
 import com.rincew1nd.publictransportmap.Models.Settings;
 import com.rincew1nd.publictransportmap.R;
 import com.rincew1nd.publictransportmap.ShortPath.ShortPathManager;

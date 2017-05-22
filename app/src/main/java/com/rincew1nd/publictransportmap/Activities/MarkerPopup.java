@@ -1,4 +1,4 @@
-package com.rincew1nd.publictransportmap.MapElements;
+package com.rincew1nd.publictransportmap.Activities;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -7,11 +7,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.rincew1nd.publictransportmap.Activities.MapsActivity;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
@@ -46,8 +44,7 @@ public class MarkerPopup implements View.OnClickListener{
         markerInfoWindow.findViewById(R.id.change_station_button).setOnClickListener(this);
     }
 
-    public void Show(Marker marker)
-    {
+    public void Show(Marker marker) {
         _graphNode = (GraphNode) marker.getTag();
         if (_graphNode != null)
         {

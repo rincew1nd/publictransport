@@ -14,7 +14,6 @@ public class ShortPathManager {
 
     private static ShortPathManager _instance;
 
-    private GraphNode _fromNode;
     private GraphNode _toNode;
     private ArrayList<ShortestPathObj> _algorithmResult;
 
@@ -72,7 +71,7 @@ public class ShortPathManager {
 
         //RecoverOptimizedNodes(algorithmReadyGraph, fromNodeId, toNodeId);
 
-        _fromNode = GraphManager.GetInstance().Nodes.get(Settings.FromStationId);
+        GraphNode _fromNode = GraphManager.GetInstance().Nodes.get(Settings.FromStationId);
         _toNode = GraphManager.GetInstance().Nodes.get(Settings.ToStationId);
         ArrayList<Integer> path = new ArrayList<>();
 
@@ -82,14 +81,14 @@ public class ShortPathManager {
         int[] weight = new int[] {0, 0, 0};
 
         Log.d("SEARCH_START", " ");
-        DepthSearch(path, weight, _fromNode, true);
+        DepthSearch(path, weight, _fromNode, null, true);
         Collections.sort(_algorithmResult);
         Log.d("SEARCH_END", " ");
         return _algorithmResult;
     }
 
-    private void DepthSearch(ArrayList<Integer> path, int[] weight,
-                             GraphNode lastNode, boolean addDelay) {
+    private void DepthSearch(ArrayList<Integer> path, int[] weight, GraphNode lastNode,
+                             GraphPath lastPath, boolean addDelay) {
         boolean addDelayCopy = false;
         if (lastNode.Id == _toNode.Id)
         {
@@ -109,7 +108,9 @@ public class ShortPathManager {
                 continue;
             if (gPath.Delay < 0)
                 continue;
-            //TODO Пересадка на уже ушедшие электрички
+            //TODO test this
+            if (lastPath != null && lastPath.Delay > gPath.Delay)
+                continue;
 
             ArrayList newPath = new ArrayList<>(path);
             if (gPath.ToNode.OptimizedNodes.size() > 0)
@@ -124,7 +125,7 @@ public class ShortPathManager {
                 newWeight[1]++;
                 newWeight[2] += gPath.Cost;
             }
-            DepthSearch(newPath, newWeight, gPath.ToNode, addDelayCopy);
+            DepthSearch(newPath, newWeight, gPath.ToNode, gPath, addDelayCopy);
         }
     }
 

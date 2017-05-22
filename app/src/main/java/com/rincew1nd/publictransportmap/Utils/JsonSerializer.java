@@ -13,22 +13,11 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Type;
 
-
-/**
- * An object for reading from a JSON resource file and constructing an object from that resource file using Gson.
- */
 public class JsonSerializer {
 
     private static final String LOGTAG = JsonSerializer.class.getSimpleName();
     private String jsonString;
 
-    /**
-     * Read from a resources file and create a {@link JsonSerializer} object that will allow the creation of other
-     * objects from this resource.
-     *
-     * @param resources An application {@link Resources} object.
-     * @param id        The id for the resource to load, typically held in the raw/ folder.
-     */
     public JsonSerializer(Resources resources, int id) {
         InputStream resourceReader = resources.openRawResource(id);
         Writer writer = new StringWriter();

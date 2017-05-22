@@ -66,11 +66,10 @@ public class GraphNode {
 
     @Override
     public int hashCode() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.Id);
-        sb.append(this.RouteId);
-        sb.append(this.Name);
-        return sb.toString().hashCode();
+        String sb = String.valueOf(this.Id) +
+                this.RouteId +
+                this.Name;
+        return sb.hashCode();
     }
 
     @Override
@@ -83,10 +82,7 @@ public class GraphNode {
         }
         final GraphNode other = (GraphNode) obj;
 
-        if (this.Type != other.Type || this.Id != other.Id ||
-            this.Name != other.Name || this.RouteId != other.RouteId){
-            return false;
-        }
-        return true;
+        return !(this.Type != other.Type || this.Id != other.Id ||
+                this.Name.equals(other.Name) || this.RouteId != other.RouteId);
     }
 }
