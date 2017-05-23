@@ -108,9 +108,11 @@ public class ShortPathManager {
                 continue;
             if (gPath.Delay < 0)
                 continue;
-            //TODO test this
-            if (lastPath != null && lastPath.Delay > gPath.Delay)
-                continue;
+            //TODO ограничить пересадки электричек:
+            // добавить инкремент пересадки
+            // не пересаживаться на ушедшие поезда
+            //if (lastPath != null && lastPath.Delay != 0 && gPath.Delay != 0 && lastPath.Delay > gPath.Delay)
+            //    continue;
 
             ArrayList newPath = new ArrayList<>(path);
             if (gPath.ToNode.OptimizedNodes.size() > 0)

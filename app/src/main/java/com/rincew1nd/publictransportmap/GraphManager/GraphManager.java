@@ -1,6 +1,5 @@
 package com.rincew1nd.publictransportmap.GraphManager;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.rincew1nd.publictransportmap.Activities.MapsActivity;
@@ -178,7 +177,21 @@ public class GraphManager {
         return true;
     }
 
-    public GraphNode GetNodeById(int nodeId) {
-        return Nodes.get(nodeId);
+    public HashSet<Stop> NodesFromScheduledTransportRouteId(int routeId) {
+        HashSet<Stop> result = new HashSet<>();
+        com.rincew1nd.publictransportmap.Models.Scheduled.Route route = null;
+
+        for (com.rincew1nd.publictransportmap.Models.Scheduled.Route droute:
+                TransportGraph.ScheduledTransport.Routes)
+            if (droute.Id == routeId)
+                route = droute;
+        if (route == null) return null;
+        for (Trip trip: route.Trips.values()) {
+            for (StopTime stopTime: trip.StopTimes)
+                if (!result.contains(stopTime.Stop))
+                    result.add(stopTime.Stop);
+        }
+
+        return result;
     }
 }

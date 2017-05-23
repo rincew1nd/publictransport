@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.model.Marker;
 import com.rincew1nd.publictransportmap.Activities.MapsActivity;
+import com.rincew1nd.publictransportmap.Listeners.MapListeners;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
 import com.rincew1nd.publictransportmap.Models.Settings;
 import com.rincew1nd.publictransportmap.R;
@@ -23,7 +24,7 @@ public class MarkerPopup implements View.OnClickListener{
     private GraphNode _graphNode;
     private TextView _stationName;
 
-    public MarkerPopup(MapsActivity context) {
+    public MarkerPopup(MapsActivity context, MapListeners listener) {
         _context = context;
 
         LayoutInflater inflater =
@@ -37,6 +38,7 @@ public class MarkerPopup implements View.OnClickListener{
         _popupWindow.setOutsideTouchable(true);
         _popupWindow.setFocusable(true);
         _popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        _popupWindow.setOnDismissListener(listener);
 
         _stationName = (TextView) markerInfoWindow.findViewById(R.id.marker_infowindow_station);
         markerInfoWindow.findViewById(R.id.from_station_button).setOnClickListener(this);
