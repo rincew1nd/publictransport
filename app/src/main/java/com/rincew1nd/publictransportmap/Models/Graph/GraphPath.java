@@ -10,6 +10,7 @@ import com.rincew1nd.publictransportmap.Models.Transfers.Transfer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class GraphPath {
 
@@ -21,6 +22,8 @@ public class GraphPath {
     public int Delay = 0;
     public int Time;
     public int Cost;
+
+    public Object original;
 
     public int Width = 30;
     public int PathColor = -16777216;
@@ -50,18 +53,21 @@ public class GraphPath {
             if (color != null)
                 SetColor(color);
         }
+        original = path;
     }
 
     public GraphPath (com.rincew1nd.publictransportmap.Models.WalkingPaths.Path path) {
         this(GraphNodeType.Walking, path.FromNodeId, path.ToNodeId, path.Time, 0,
                 GraphManager.GetInstance().Nodes);
         SetColor("FF0000");
+        original = path;
     }
 
     public GraphPath (Transfer transfer) {
         this(GraphNodeType.None, transfer.FromNodeId, transfer.ToNodeId, transfer.Time,
                 transfer.Cost, GraphManager.GetInstance().Nodes);
         IsTransfer = true;
+        original = transfer;
     }
 
     public GraphPath (StopTime from, StopTime to) {
@@ -96,28 +102,4 @@ public class GraphPath {
             MidPoints.set(order+1, midPointBackup);
         }
     }
-
-//    @Override
-//    public int hashCode() {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append(this.FromNode.hashCode());
-//        sb.append(this.ToNode.hashCode());
-//        return sb.toString().hashCode();
-//    }
-//
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (obj == null) {
-//            return false;
-//        }
-//        if (!GraphPath.class.isAssignableFrom(obj.getClass())) {
-//            return false;
-//        }
-//        final GraphPath other = (GraphPath) obj;
-//
-//        if (this.FromNode.Id != other.FromNode.Id || this.ToNode.Id != other.FromNode.Id) {
-//            return false;
-//        }
-//        return true;
-//    }
 }

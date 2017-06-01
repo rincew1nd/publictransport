@@ -1,6 +1,7 @@
 package com.rincew1nd.publictransportmap.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
@@ -66,6 +67,9 @@ public class MarkerPopup implements View.OnClickListener{
                 Settings.ToStationId = _graphNode.Id;
                 break;
             case R.id.change_station_button:
+                Intent i = new Intent(_context, MarkerEditActivity.class);
+                i.putExtra("MarkerId", _graphNode.Id);
+                _context.startActivity(i);
                 break;
         }
         _popupWindow.dismiss();

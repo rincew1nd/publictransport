@@ -7,6 +7,7 @@ import com.rincew1nd.publictransportmap.Models.WalkingPaths.Node;
 
 import android.graphics.Color;
 import java.util.HashSet;
+import java.util.Objects;
 
 public class GraphNode {
 
@@ -18,6 +19,7 @@ public class GraphNode {
     public float Lat;
     public float Lon;
     public int NodeColor;
+    public Object original;
 
     // Связи с другими нодами
     public HashSet<GraphPath> Paths;
@@ -48,16 +50,19 @@ public class GraphNode {
             color = "000000";
         SetColor(color);
         RouteId = station.RouteId;
+        original = station;
     }
 
     public GraphNode (Node node) {
         this(GraphNodeType.Walking, node.Id, node.Name, node.Lat, node.Lon);
         SetColor("FF0000");
+        original = node;
     }
 
     public GraphNode (Stop stop) {
         this(GraphNodeType.Scheduled, stop.Id, stop.Name, stop.Lat, stop.Lon);
         SetColor("FF00FF");
+        original = stop;
     }
 
     public void SetColor(String color) {

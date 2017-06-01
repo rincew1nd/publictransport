@@ -1,6 +1,8 @@
 package com.rincew1nd.publictransportmap.Models.Scheduled;
 
-public class Stop {
+import com.rincew1nd.publictransportmap.Models.TransportNode;
+
+public class Stop {//} extends TransportNode {
     public Integer Id;
     public String Name;
     public Float Lon;

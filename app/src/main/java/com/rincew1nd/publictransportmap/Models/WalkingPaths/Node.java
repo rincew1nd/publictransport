@@ -1,6 +1,8 @@
 package com.rincew1nd.publictransportmap.Models.WalkingPaths;
 
-public class Node {
+import com.rincew1nd.publictransportmap.Models.TransportNode;
+
+public class Node {//} extends TransportNode {
     public int Id;
     public String Name;
     public float Lon;

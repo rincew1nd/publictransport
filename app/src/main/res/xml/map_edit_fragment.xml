@@ -1,0 +1,31 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Общее">
+
+        <EditTextPreference
+            android:key="marker_name"
+            android:title="Название"
+            android:defaultValue="1234"
+            android:dialogTitle="Введите название" />
+
+        <EditTextPreference
+            android:key="marker_lon"
+            android:title="Широта"
+            android:defaultValue="1234"
+            android:dialogTitle="Введите широту" />
+
+        <EditTextPreference
+            android:key="marker_lat"
+            android:title="Долгота"
+            android:defaultValue="1234"
+            android:dialogTitle="Введите долготу" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Пути"
+        android:key="marker_paths"/>
+
+</PreferenceScreen>

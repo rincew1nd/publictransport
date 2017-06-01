@@ -38,6 +38,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.StationListActivity"/>
+        <activity android:name=".Activities.SettingsActivity"/>
+        <activity android:name=".Activities.MarkerEditActivity"/>
     </application>
 
 </manifest>

@@ -14,10 +14,12 @@ import com.rincew1nd.publictransportmap.Activities.MapsActivity;
 import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphPath;
+import com.rincew1nd.publictransportmap.Models.Settings;
 import com.rincew1nd.publictransportmap.Utils.BitmapGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MapMarkerManager {
@@ -28,13 +30,15 @@ public class MapMarkerManager {
     private GraphManager _graphManager;
     private HashMap<Integer, Marker> _markers;
     private HashMap<Marker, Bitmap> _markersImage;
-    private HashMap<Polyline, GraphPath> _polyPaths;
+    private HashMap<GraphPath, Polyline> _polyPaths;
+    private float lastZoom;
 
     private MapMarkerManager() {
         _graphManager = GraphManager.GetInstance();
         _markers = new HashMap<>();
         _markersImage = new HashMap<>();
         _polyPaths = new HashMap<>();
+        lastZoom = 10;
     }
 
     public static MapMarkerManager GetInstance() {
@@ -74,11 +78,36 @@ public class MapMarkerManager {
                     .endCap(new RoundCap())
                     .color(path.PathColor);
             Polyline polyPath = mMap.addPolyline(polylineOptions);
-            _polyPaths.put(polyPath, path);
+            _polyPaths.put(path, polyPath);
         }
     }
 
+    public void UpdateMarkerImage(GraphNode node) {
+        Marker marker = _markers.get(node.Id);
+
+        LatLng newPosition = new LatLng(node.Lat, node.Lon);
+        marker.setPosition(newPosition);
+        for(GraphPath path: _graphManager.Paths) {
+            if (path.FromNode.Id == node.Id) {
+                List<LatLng> line = _polyPaths.get(path).getPoints();
+                line.set(0, newPosition);
+                _polyPaths.get(path).setPoints(line);
+            }
+            if (path.ToNode.Id == node.Id) {
+                List<LatLng> line = _polyPaths.get(path).getPoints();
+                line.set(1, newPosition);
+                _polyPaths.get(path).setPoints(line);
+            }
+        }
+
+        Bitmap mapMarkerIcon =
+                BitmapGenerator.GenerateBitmapIcon(_context, node.Name, node.NodeColor);
+        _markersImage.put(marker, mapMarkerIcon);
+        UpdateMarkers(lastZoom);
+    }
+
     public void UpdateMarkers(float zoom) {
+        lastZoom = zoom;
         float markerSize = zoom*zoom / 400;
         for(Map.Entry<Marker, Bitmap> marker: _markersImage.entrySet()) {
             Bitmap scaledIcon = Bitmap.createScaledBitmap(
@@ -96,27 +125,23 @@ public class MapMarkerManager {
 
         for (Marker station : _markersImage.keySet())
             station.setVisible(false);
-        for (Polyline path: _polyPaths.keySet())
+        for (Polyline path: _polyPaths.values())
             path.setVisible(false);
 
         for(int i = 0; i < route.size(); i++) {
             _markers.get(route.get(i)).setVisible(true);
             if (i != route.size()-1)
-                for (Map.Entry<Polyline, GraphPath> path: _polyPaths.entrySet())
-                    if (path.getValue().FromNode.Id == route.get(i) &&
-                            path.getValue().ToNode.Id == route.get(i+1))
-                        path.getKey().setVisible(true);
+                for (Map.Entry<GraphPath, Polyline> path: _polyPaths.entrySet())
+                    if (path.getKey().FromNode.Id == route.get(i) &&
+                            path.getKey().ToNode.Id == route.get(i+1))
+                        path.getValue().setVisible(true);
         }
     }
 
     public void RestoreHighlight() {
         for (Marker station : _markersImage.keySet())
             station.setVisible(true);
-        for (Polyline path: _polyPaths.keySet())
+        for (Polyline path: _polyPaths.values())
             path.setVisible(true);
-    }
-
-    public GraphPath GetGraphPathByPolyline(Polyline line) {
-        return _polyPaths.get(line);
     }
 }
