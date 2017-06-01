@@ -7,25 +7,27 @@
         <EditTextPreference
             android:key="marker_name"
             android:title="Название"
-            android:defaultValue="1234"
             android:dialogTitle="Введите название" />
 
         <EditTextPreference
             android:key="marker_lon"
             android:title="Широта"
-            android:defaultValue="1234"
-            android:dialogTitle="Введите широту" />
+            android:dialogTitle="Введите широту"
+            android:inputType="number"/>
 
         <EditTextPreference
             android:key="marker_lat"
             android:title="Долгота"
-            android:defaultValue="1234"
-            android:dialogTitle="Введите долготу" />
+            android:dialogTitle="Введите долготу"
+            android:inputType="number"/>
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Пути"
-        android:key="marker_paths"/>
+        android:title="Пути От"
+        android:key="marker_paths_from"/>
+    <PreferenceCategory
+        android:title="Пути До"
+        android:key="marker_paths_to"/>
 
 </PreferenceScreen>

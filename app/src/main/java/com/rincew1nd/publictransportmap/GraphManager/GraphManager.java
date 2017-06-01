@@ -16,6 +16,7 @@ import com.rincew1nd.publictransportmap.Models.Unscheduled.Station;
 import com.rincew1nd.publictransportmap.Utils.JsonSerializer;
 import com.rincew1nd.publictransportmap.R;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,7 +26,7 @@ public class GraphManager {
 
     private GraphManager() {
         Nodes = new HashMap<>();
-        Paths = new HashSet<>();
+        Paths = new ArrayList<>();
     }
     public static GraphManager GetInstance() {
         if (_instance == null)
@@ -40,7 +41,7 @@ public class GraphManager {
     public Transport TransportGraph;
 
     public HashMap<Integer, GraphNode> Nodes;
-    public HashSet<GraphPath> Paths;
+    public ArrayList<GraphPath> Paths;
 
     // Load markers from JSON file and generate icons
     public void LoadGraph() {

@@ -40,6 +40,7 @@
         <activity android:name=".Activities.StationListActivity"/>
         <activity android:name=".Activities.SettingsActivity"/>
         <activity android:name=".Activities.MarkerEditActivity"/>
+        <activity android:name=".Activities.PathEditActivity"/>
     </application>
 
 </manifest>

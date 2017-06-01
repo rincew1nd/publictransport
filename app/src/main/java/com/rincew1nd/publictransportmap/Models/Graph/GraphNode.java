@@ -5,6 +5,8 @@ import com.rincew1nd.publictransportmap.Models.TransportNode;
 import com.rincew1nd.publictransportmap.Models.Unscheduled.Station;
 
 import android.graphics.Color;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class GraphNode {
@@ -20,7 +22,7 @@ public class GraphNode {
     public Object original;
 
     // Связи с другими нодами
-    public HashSet<GraphPath> Paths;
+    public ArrayList<GraphPath> Paths;
     // Ноды вошедшие в оптимизированную ноду
     public HashSet<GraphNode> OptimizedNodes;
     public boolean IsOptimizable = true;
@@ -33,7 +35,7 @@ public class GraphNode {
         Lat = lat;
         Lon = lon;
 
-        Paths = new HashSet<>();
+        Paths = new ArrayList<>();
         OptimizedNodes = new HashSet<>();
     }
 

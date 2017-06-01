@@ -1,5 +1,6 @@
 package com.rincew1nd.publictransportmap.Activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -32,7 +33,8 @@ public class MarkerEditActivity extends PreferenceActivity {
     }
 
     public static class MarkerEditFragment extends PreferenceFragment implements
-            Preference.OnPreferenceChangeListener{
+            Preference.OnPreferenceChangeListener,
+            Preference.OnPreferenceClickListener {
 
         private GraphNode _node;
 
@@ -43,7 +45,7 @@ public class MarkerEditActivity extends PreferenceActivity {
             super.onCreate(savedInstanceState);
             SetupSettingsDefaultValues();
 
-            addPreferencesFromResource(R.xml.map_edit_fragment);
+            addPreferencesFromResource(R.xml.node_edit_fragment);
             SetupPreferenceScreen();
         }
 
@@ -55,13 +57,24 @@ public class MarkerEditActivity extends PreferenceActivity {
             getPreferenceManager().findPreference("marker_lon").setSummary(""+_node.Lon);
             getPreferenceManager().findPreference("marker_lon").setOnPreferenceChangeListener(this);
 
-            PreferenceCategory pathCategory =
-                    (PreferenceCategory) getPreferenceManager().findPreference("marker_paths");
-            for(GraphPath path: _node.Paths) {
-                Preference pref = new Preference(getActivity());
-                pref.setTitle(path.ToNode.Name);
-                pref.setOnPreferenceChangeListener(this);
-                pathCategory.addPreference(pref);
+            PreferenceCategory pathCategoryFrom =
+                    (PreferenceCategory) getPreferenceManager().findPreference("marker_paths_from");
+            PreferenceCategory pathCategoryTo =
+                    (PreferenceCategory) getPreferenceManager().findPreference("marker_paths_to");
+            for(int i = 0; i<GraphManager.GetInstance().Paths.size(); i++) {
+                GraphPath path = GraphManager.GetInstance().Paths.get(i);
+                if(path.FromNode.Id == _node.Id || path.ToNode.Id == _node.Id) {
+                    Preference pref = new Preference(getActivity());
+                    pref.setKey("path_"+i);
+                    pref.setOnPreferenceClickListener(this);
+                    if (path.FromNode.Id == _node.Id) {
+                        pref.setTitle(path.ToNode.Name);
+                        pathCategoryFrom.addPreference(pref);
+                    } else {
+                        pref.setTitle(path.FromNode.Name);
+                        pathCategoryTo.addPreference(pref);
+                    }
+                }
             }
         }
 
@@ -94,6 +107,17 @@ public class MarkerEditActivity extends PreferenceActivity {
             preference.setSummary((String)newValue);
             MapMarkerManager.GetInstance().UpdateMarkerImage(_node);
             return true;
+        }
+
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            if (preference.getKey().contains("path_")) {
+                int pathPos = Integer.parseInt(preference.getKey().substring(5));
+                Intent i = new Intent(getActivity(), PathEditActivity.class);
+                i.putExtra("PathPos", pathPos);
+                getActivity().startActivity(i);
+            }
+            return false;
         }
     }
 }

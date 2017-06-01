@@ -1,0 +1,29 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Общее">
+
+        <Preference
+            android:key="path_from"
+            android:title="От"/>
+
+        <Preference
+            android:key="path_to"
+            android:title="До"/>
+
+        <EditTextPreference
+            android:key="path_time"
+            android:title="Время поездки"
+            android:dialogTitle="Введите время поездки"
+            android:inputType="number"/>
+
+        <EditTextPreference
+            android:key="path_cost"
+            android:title="Стоимость пересадки"
+            android:dialogTitle="Введите соимость пересадки"
+            android:inputType="number"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
