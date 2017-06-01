@@ -2,6 +2,8 @@ package com.rincew1nd.publictransportmap.Models.Scheduled;
 
 import android.support.annotation.NonNull;
 
+import com.rincew1nd.publictransportmap.Models.TransportNode;
+
 public class StopTime implements Comparable<StopTime>{
     public int StopId;
     public int TripId;
@@ -9,7 +11,7 @@ public class StopTime implements Comparable<StopTime>{
     public int DepartureTime;
     public int ArrivalTime;
 
-    public Stop Stop;
+    public TransportNode Stop;
 
     @Override
     public int compareTo(@NonNull StopTime o) {

@@ -4,15 +4,15 @@ import android.util.Log;
 
 import com.rincew1nd.publictransportmap.Activities.MapsActivity;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
+import com.rincew1nd.publictransportmap.Models.Graph.GraphNodeType;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphPath;
 import com.rincew1nd.publictransportmap.Models.Scheduled.Calendar;
-import com.rincew1nd.publictransportmap.Models.Scheduled.Stop;
 import com.rincew1nd.publictransportmap.Models.Scheduled.StopTime;
 import com.rincew1nd.publictransportmap.Models.Scheduled.Trip;
 import com.rincew1nd.publictransportmap.Models.Transfers.Transfer;
 import com.rincew1nd.publictransportmap.Models.Transport;
+import com.rincew1nd.publictransportmap.Models.TransportNode;
 import com.rincew1nd.publictransportmap.Models.Unscheduled.Station;
-import com.rincew1nd.publictransportmap.Models.WalkingPaths.Node;
 import com.rincew1nd.publictransportmap.Utils.JsonSerializer;
 import com.rincew1nd.publictransportmap.R;
 
@@ -51,17 +51,14 @@ public class GraphManager {
     public void LinkStructures() {
         // WalkingPaths
         for (com.rincew1nd.publictransportmap.Models.WalkingPaths.Path path:
-                TransportGraph.WalkingPaths.Paths)
-        {
-            for (Node node: TransportGraph.WalkingPaths.Nodes)
-                if (node.Id == path.FromNodeId)
-                {
+                TransportGraph.WalkingPaths.Paths) {
+            for (TransportNode node: TransportGraph.WalkingPaths.Nodes)
+                if (node.Id == path.FromNodeId) {
                     path.FromNode = node;
                     break;
                 }
-            for (Node node: TransportGraph.WalkingPaths.Nodes)
-                if (node.Id == path.ToNodeId)
-                {
+            for (TransportNode node: TransportGraph.WalkingPaths.Nodes)
+                if (node.Id == path.ToNodeId) {
                     path.ToNode = node;
                     break;
                 }
@@ -69,30 +66,24 @@ public class GraphManager {
 
         // ScheduledTransport
         for (com.rincew1nd.publictransportmap.Models.Scheduled.Route route:
-                TransportGraph.ScheduledTransport.Routes)
-        {
+                TransportGraph.ScheduledTransport.Routes) {
             for (Trip trip: TransportGraph.ScheduledTransport.Trips)
-                if (trip.RouteId == route.Id)
-                {
+                if (trip.RouteId == route.Id) {
                     route.Trips.put(trip.Id, trip);
                     trip.Route = route;
                 }
         }
         for (StopTime stopTime:
-                TransportGraph.ScheduledTransport.StopTimes)
-        {
-            for (Stop stop: TransportGraph.ScheduledTransport.Stops)
-                if (stopTime.StopId == stop.Id)
-                {
+                TransportGraph.ScheduledTransport.StopTimes) {
+            for (TransportNode stop: TransportGraph.ScheduledTransport.Stops)
+                if (stopTime.StopId == stop.Id) {
                     stopTime.Stop = stop;
                     break;
                 }
         }
-        for (Trip trip: TransportGraph.ScheduledTransport.Trips)
-        {
+        for (Trip trip: TransportGraph.ScheduledTransport.Trips) {
             for (Calendar calendar: TransportGraph.ScheduledTransport.Calendars)
-                if (calendar.Id == trip.CalendarId)
-                {
+                if (calendar.Id == trip.CalendarId) {
                     trip.Calendar = calendar;
                     break;
                 }
@@ -106,24 +97,20 @@ public class GraphManager {
         // UnscheduledTransport
         // Path-FromNode,ToNode, Route-Stations
         for (com.rincew1nd.publictransportmap.Models.Unscheduled.Path path:
-                TransportGraph.UnscheduledTransport.Paths)
-        {
+                TransportGraph.UnscheduledTransport.Paths) {
             for (Station station: TransportGraph.UnscheduledTransport.Stations)
-                if (path.FromNodeId == station.Id)
-                {
+                if (path.FromNodeId == station.Id) {
                     path.FromNode = station;
                     break;
                 }
             for (Station station: TransportGraph.UnscheduledTransport.Stations)
-                if (path.ToNodeId == station.Id)
-                {
+                if (path.ToNodeId == station.Id) {
                     path.ToNode = station;
                     break;
                 }
         }
         for (com.rincew1nd.publictransportmap.Models.Unscheduled.Route route:
-                TransportGraph.UnscheduledTransport.Routes)
-        {
+                TransportGraph.UnscheduledTransport.Routes) {
             for (Station station: TransportGraph.UnscheduledTransport.Stations)
                 if (station.RouteId == route.Id)
                     route.Stations.put(station.Id, station);
@@ -133,10 +120,10 @@ public class GraphManager {
     public void ProcessGraph() {
         for (Station station : TransportGraph.UnscheduledTransport.Stations)
             Nodes.put(station.Id, new GraphNode(station));
-        for (Node node: TransportGraph.WalkingPaths.Nodes)
-            Nodes.put(node.Id, new GraphNode(node));
-        for (Stop stop: TransportGraph.ScheduledTransport.Stops)
-            Nodes.put(stop.Id, new GraphNode(stop));
+        for (TransportNode node: TransportGraph.WalkingPaths.Nodes)
+            Nodes.put(node.Id, new GraphNode(node, GraphNodeType.Walking));
+        for (TransportNode stop: TransportGraph.ScheduledTransport.Stops)
+            Nodes.put(stop.Id, new GraphNode(stop, GraphNodeType.Scheduled));
 
         for (com.rincew1nd.publictransportmap.Models.Unscheduled.Path path:
                 TransportGraph.UnscheduledTransport.Paths) {
@@ -177,8 +164,8 @@ public class GraphManager {
         return true;
     }
 
-    public HashSet<Stop> NodesFromScheduledTransportRouteId(int routeId) {
-        HashSet<Stop> result = new HashSet<>();
+    public HashSet<TransportNode> NodesFromScheduledTransportRouteId(int routeId) {
+        HashSet<TransportNode> result = new HashSet<>();
         com.rincew1nd.publictransportmap.Models.Scheduled.Route route = null;
 
         for (com.rincew1nd.publictransportmap.Models.Scheduled.Route droute:

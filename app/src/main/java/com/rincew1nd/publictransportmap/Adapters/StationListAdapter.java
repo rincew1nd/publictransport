@@ -13,10 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
-import com.rincew1nd.publictransportmap.Models.Scheduled.Stop;
 import com.rincew1nd.publictransportmap.Models.StationListItem;
+import com.rincew1nd.publictransportmap.Models.TransportNode;
 import com.rincew1nd.publictransportmap.Models.Unscheduled.Station;
-import com.rincew1nd.publictransportmap.Models.WalkingPaths.Node;
 import com.rincew1nd.publictransportmap.R;
 
 import java.util.HashMap;
@@ -88,7 +87,7 @@ public class StationListAdapter extends ArrayAdapter<StationListItem>
             if (_lastRouteId < route.Id) _lastRouteId = route.Id;
             _lastOrder++;
 
-            for (Stop station:
+            for (TransportNode station:
                     GraphManager.GetInstance().NodesFromScheduledTransportRouteId(route.Id)) {
                 StationListItem item = new StationListItem(StationListItem.ITEM, station.Name, station.Id);
                 item.sectionPosition = route.Id;
@@ -110,7 +109,7 @@ public class StationListAdapter extends ArrayAdapter<StationListItem>
         _routeColors.put(_lastRouteId, "FF0000");
         _lastOrder++;
 
-        for (Node node: GraphManager.GetInstance().TransportGraph.WalkingPaths.Nodes) {
+        for (TransportNode node: GraphManager.GetInstance().TransportGraph.WalkingPaths.Nodes) {
             StationListItem item = new StationListItem(StationListItem.ITEM, node.Name, node.Id);
             item.sectionPosition = _lastRouteId;
             item.listPosition = _lastOrder;

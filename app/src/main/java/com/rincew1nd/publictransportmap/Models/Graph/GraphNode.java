@@ -1,13 +1,11 @@
 package com.rincew1nd.publictransportmap.Models.Graph;
 
 import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
-import com.rincew1nd.publictransportmap.Models.Scheduled.Stop;
+import com.rincew1nd.publictransportmap.Models.TransportNode;
 import com.rincew1nd.publictransportmap.Models.Unscheduled.Station;
-import com.rincew1nd.publictransportmap.Models.WalkingPaths.Node;
 
 import android.graphics.Color;
 import java.util.HashSet;
-import java.util.Objects;
 
 public class GraphNode {
 
@@ -53,16 +51,11 @@ public class GraphNode {
         original = station;
     }
 
-    public GraphNode (Node node) {
-        this(GraphNodeType.Walking, node.Id, node.Name, node.Lat, node.Lon);
-        SetColor("FF0000");
+    public GraphNode (TransportNode node, GraphNodeType type) {
+        this(type, node.Id, node.Name, node.Lat, node.Lon);
+        node.Type = type;
+        SetColor((node.Type == GraphNodeType.Walking) ? "FF0000" : "FF00FF");
         original = node;
-    }
-
-    public GraphNode (Stop stop) {
-        this(GraphNodeType.Scheduled, stop.Id, stop.Name, stop.Lat, stop.Lon);
-        SetColor("FF00FF");
-        original = stop;
     }
 
     public void SetColor(String color) {
