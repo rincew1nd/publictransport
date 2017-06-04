@@ -3,15 +3,18 @@ package com.rincew1nd.publictransportmap.Activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.widget.Button;
 
 import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
 import com.rincew1nd.publictransportmap.MapElements.MapMarkerManager;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
+import com.rincew1nd.publictransportmap.Models.Graph.GraphNodeType;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphPath;
 import com.rincew1nd.publictransportmap.Models.TransportNode;
 import com.rincew1nd.publictransportmap.R;
@@ -32,7 +35,7 @@ public class MarkerEditActivity extends PreferenceActivity {
             .commit();
     }
 
-    public static class MarkerEditFragment extends PreferenceFragment implements
+    public class MarkerEditFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
             Preference.OnPreferenceClickListener {
 
@@ -50,6 +53,7 @@ public class MarkerEditActivity extends PreferenceActivity {
         }
 
         private void SetupPreferenceScreen() {
+            // Fill default parameters
             getPreferenceManager().findPreference("marker_name").setSummary(_node.Name);
             getPreferenceManager().findPreference("marker_name").setOnPreferenceChangeListener(this);
             getPreferenceManager().findPreference("marker_lat").setSummary(""+_node.Lat);
@@ -57,6 +61,7 @@ public class MarkerEditActivity extends PreferenceActivity {
             getPreferenceManager().findPreference("marker_lon").setSummary(""+_node.Lon);
             getPreferenceManager().findPreference("marker_lon").setOnPreferenceChangeListener(this);
 
+            // Fill path from and to node
             PreferenceCategory pathCategoryFrom =
                     (PreferenceCategory) getPreferenceManager().findPreference("marker_paths_from");
             PreferenceCategory pathCategoryTo =
@@ -76,12 +81,25 @@ public class MarkerEditActivity extends PreferenceActivity {
                     }
                 }
             }
+
+            // Fill marker type
+            getPreferenceManager().findPreference("marker_type").setSummary(_node.Type.toString());
+            getPreferenceManager().findPreference("marker_type").setEnabled(false);
+            CharSequence[] entries = new CharSequence[GraphNodeType.values().length];
+            CharSequence[] entryValues = new CharSequence[GraphNodeType.values().length];
+            for(int i = 0; i < GraphNodeType.values().length; i++) {
+                entries[i] = GraphNodeType.values()[i].toString();
+                entryValues[i] = String.valueOf(GraphNodeType.values()[i].ordinal());
+            }
+            ((ListPreference)getPreferenceManager().findPreference("marker_type")).setEntries(entries);
+            ((ListPreference)getPreferenceManager().findPreference("marker_type")).setEntryValues(entryValues);
         }
 
         private void SetupSettingsDefaultValues() {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             SharedPreferences.Editor store = prefs.edit();
             store.clear();
+            store.putString("marker_type", String.valueOf(_node.Type.ordinal()));
             store.putString("marker_name", _node.Name);
             store.putString("marker_lat", ""+_node.Lat);
             store.putString("marker_lon", ""+_node.Lon);

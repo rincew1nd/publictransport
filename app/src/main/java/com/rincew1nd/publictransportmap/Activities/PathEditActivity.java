@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 
 import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
 import com.rincew1nd.publictransportmap.MapElements.MapMarkerManager;
+import com.rincew1nd.publictransportmap.Models.Graph.GraphNodeType;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphPath;
 import com.rincew1nd.publictransportmap.Models.TransportNode;
 import com.rincew1nd.publictransportmap.R;
@@ -52,6 +53,8 @@ public class PathEditActivity extends PreferenceActivity {
             getPreferenceManager().findPreference("path_time").setOnPreferenceChangeListener(this);
             getPreferenceManager().findPreference("path_cost").setSummary(""+_path.Cost);
             getPreferenceManager().findPreference("path_cost").setOnPreferenceChangeListener(this);
+            if (_path.Type != GraphNodeType.Scheduled)
+                getPreferenceScreen().removePreference(getPreferenceManager().findPreference("path_cost"));
         }
 
         private void SetupSettingsDefaultValues() {

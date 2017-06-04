@@ -4,6 +4,11 @@
     <PreferenceCategory
         android:title="Общее">
 
+        <ListPreference
+            android:key="marker_type"
+            android:title="Тип"
+            android:dialogTitle="Выберите тип" />
+
         <EditTextPreference
             android:key="marker_name"
             android:title="Название"

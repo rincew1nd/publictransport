@@ -26,6 +26,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Settings.LoadSettings(this);
 
         setContentView(R.layout.activity_maps);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -39,7 +40,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style));
+        SettingsActivity.Map = googleMap;
+
+        if (Settings.MapStyleResourceId == -1) {
+            mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+        } else {
+            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            mMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(this, Settings.MapStyleResourceId));
+        }
 
         // Add idle camera listener
         _mapListeners.SetGoogleMap(mMap);
@@ -68,20 +77,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.map_type_none:
-                mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+            case R.id.settings:
+                this.startActivity(new Intent(this, SettingsActivity.class));
                 return true;
-            case R.id.default_map:
-                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style));
+            case R.id.add_marker:
+                this.startActivity(new Intent(this, MarkerEditActivity.class));
                 return true;
-            case R.id.silver_map:
-                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_silver));
-                return true;
-            case R.id.retro_map:
-                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_retro));
+            case R.id.add_path:
+                this.startActivity(new Intent(this, PathEditActivity.class));
                 return true;
             case R.id.depth_2:
                 Settings.SearchDepth = 2;

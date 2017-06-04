@@ -1,24 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/map_type_none"
-        android:title="MAP_TYPE_NONE"/>
+        android:id="@+id/settings"
+        android:title="Настройки"/>
     <item
-        android:id="@+id/default_map"
-        android:title="Default Map"/>
+        android:id="@+id/add_marker"
+        android:title="Добавить маркер"/>
     <item
-        android:id="@+id/silver_map"
-        android:title="Silver Map"/>
-    <item
-        android:id="@+id/retro_map"
-        android:title="Retro Map"/>
-    <item
-        android:id="@+id/depth_2"
-        android:title="Depth = 2"/>
-    <item
-        android:id="@+id/depth_3"
-        android:title="Depth = 3"/>
-    <item
-        android:id="@+id/depth_4"
-        android:title="Depth = 4"/>
+        android:id="@+id/add_path"
+        android:title="Добавить путь"/>
 </menu>
