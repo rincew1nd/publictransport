@@ -5,6 +5,11 @@
         android:title="Настройки">
 
         <ListPreference
+            android:key="map_file"
+            android:title="Карта"
+            android:dialogTitle="Выберите карту с sdcard" />
+
+        <ListPreference
             android:key="map_type"
             android:title="Тип карты"
             android:entries="@array/map_types"
@@ -13,8 +18,8 @@
 
         <EditTextPreference
             android:key="algorithm_depth"
+            android:title="Глубина поиска"
             android:numeric="integer"
-            android:text="Глубина поиска"
             android:dialogTitle="Изменить глубину поиска" />
     </PreferenceCategory>
 

@@ -26,6 +26,7 @@ public class MapMarkerManager {
 
     private static MapMarkerManager instance;
     private MapsActivity _context;
+    private GoogleMap _map;
 
     private GraphManager _graphManager;
     private HashMap<Integer, Marker> _markers;
@@ -47,13 +48,19 @@ public class MapMarkerManager {
         return instance;
     }
 
-    public void SetContext(MapsActivity context) {
+    public void SetContextAndMap(MapsActivity context, GoogleMap mMap) {
         _context = context;
+        _map = mMap;
     }
 
-    public void SetUpMarkersAndPaths(GoogleMap mMap) {
+    public void SetUpMarkersAndPaths() {
         //GraphOptimization go = new GraphOptimization();
         //go.OptimizeGraph(400);
+
+        _map.clear();
+        _markers.clear();
+        _markersImage.clear();
+        _polyPaths.clear();
 
         for (GraphNode node: _graphManager.Nodes.values()) { //go.OptimizedNodes.values()) {
             Bitmap mapMarkerIcon =
@@ -62,7 +69,7 @@ public class MapMarkerManager {
                     .icon(BitmapDescriptorFactory.fromBitmap(mapMarkerIcon))
                     .position(new LatLng(node.Lat, node.Lon))
                     .anchor(0.08f, 0.5f);
-            Marker mapMarker = mMap.addMarker(markerOptions);
+            Marker mapMarker = _map.addMarker(markerOptions);
             mapMarker.setTag(node);
             _markers.put(node.Id, mapMarker);
             _markersImage.put(mapMarker, mapMarkerIcon);
@@ -77,7 +84,7 @@ public class MapMarkerManager {
                     .startCap(new RoundCap())
                     .endCap(new RoundCap())
                     .color(path.PathColor);
-            Polyline polyPath = mMap.addPolyline(polylineOptions);
+            Polyline polyPath = _map.addPolyline(polylineOptions);
             _polyPaths.put(path, polyPath);
         }
     }

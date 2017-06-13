@@ -1,5 +1,7 @@
 package com.rincew1nd.publictransportmap.GraphManager;
 
+import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 import com.rincew1nd.publictransportmap.Activities.MapsActivity;
@@ -9,13 +11,17 @@ import com.rincew1nd.publictransportmap.Models.Graph.GraphPath;
 import com.rincew1nd.publictransportmap.Models.Scheduled.Calendar;
 import com.rincew1nd.publictransportmap.Models.Scheduled.StopTime;
 import com.rincew1nd.publictransportmap.Models.Scheduled.Trip;
+import com.rincew1nd.publictransportmap.Models.Settings;
 import com.rincew1nd.publictransportmap.Models.Transfers.Transfer;
 import com.rincew1nd.publictransportmap.Models.Transport;
 import com.rincew1nd.publictransportmap.Models.TransportNode;
 import com.rincew1nd.publictransportmap.Models.Unscheduled.Station;
+import com.rincew1nd.publictransportmap.Utils.FileOperations;
 import com.rincew1nd.publictransportmap.Utils.JsonSerializer;
 import com.rincew1nd.publictransportmap.R;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,11 +39,11 @@ public class GraphManager {
             _instance = new GraphManager();
         return _instance;
     }
-    public void SetContext(MapsActivity context) {
+    public void SetContext(Context context) {
         _context = context;
     }
 
-    private MapsActivity _context;
+    private Context _context;
     public Transport TransportGraph;
 
     public HashMap<Integer, GraphNode> Nodes;
@@ -45,11 +51,36 @@ public class GraphManager {
 
     // Load markers from JSON file and generate icons
     public void LoadGraph() {
-        JsonSerializer reader = new JsonSerializer(_context.getResources(), R.raw.transport);
+        Nodes.clear();
+        Paths.clear();
+        
+        CheckDefaultMapFile();
+        File file = new File(
+                Environment.getExternalStorageDirectory() + File.separator +
+                "transportmap" + File.separator + Settings.mapFilePath);
+        JsonSerializer reader = new JsonSerializer(file);
         TransportGraph = reader.constructUsingGson(Transport.class);
+        LinkStructures();
+        ProcessGraph();
     }
 
-    public void LinkStructures() {
+    private void CheckDefaultMapFile() {
+        File dir = new File(Environment.getExternalStorageDirectory() + File.separator + "transportmap");
+        File file = new File(dir, "transport.json");
+        if (!dir.exists())
+            dir.mkdir();
+        if (!file.exists())
+            try {
+                FileOperations.CopyRAWtoSDCard(
+                        R.raw.transport,
+                        file.getPath(),
+                        _context);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+    }
+
+    private void LinkStructures() {
         // WalkingPaths
         for (com.rincew1nd.publictransportmap.Models.WalkingPaths.Path path:
                 TransportGraph.WalkingPaths.Paths) {
@@ -118,7 +149,7 @@ public class GraphManager {
         }
     }
 
-    public void ProcessGraph() {
+    private void ProcessGraph() {
         for (Station station : TransportGraph.UnscheduledTransport.Stations)
             Nodes.put(station.Id, new GraphNode(station));
         for (TransportNode node: TransportGraph.WalkingPaths.Nodes)

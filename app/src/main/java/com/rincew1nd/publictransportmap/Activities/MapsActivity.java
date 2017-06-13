@@ -59,10 +59,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Create marker manager
         GraphManager.GetInstance().SetContext(this);
         GraphManager.GetInstance().LoadGraph();
-        GraphManager.GetInstance().LinkStructures();
-        GraphManager.GetInstance().ProcessGraph();
-        MapMarkerManager.GetInstance().SetContext(this);
-        MapMarkerManager.GetInstance().SetUpMarkersAndPaths(mMap);
+        MapMarkerManager.GetInstance().SetContextAndMap(this, mMap);
+        MapMarkerManager.GetInstance().SetUpMarkersAndPaths();
 
         // Move camera to center of Moscow
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(55.748700, 37.617365), 10));
@@ -85,15 +83,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return true;
             case R.id.add_path:
                 this.startActivity(new Intent(this, PathEditActivity.class));
-                return true;
-            case R.id.depth_2:
-                Settings.SearchDepth = 2;
-                return true;
-            case R.id.depth_3:
-                Settings.SearchDepth = 3;
-                return true;
-            case R.id.depth_4:
-                Settings.SearchDepth = 4;
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

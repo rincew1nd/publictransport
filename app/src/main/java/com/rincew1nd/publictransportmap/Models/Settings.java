@@ -14,6 +14,7 @@ public class Settings {
 
     public static int SearchDepth;
     public static int MapStyleResourceId;
+    public static String mapFilePath = "test_map.json";
 
     public static void LoadSettings(Context context) {
         SearchDepth = Integer.parseInt(

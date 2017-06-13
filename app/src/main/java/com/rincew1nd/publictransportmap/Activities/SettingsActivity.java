@@ -1,6 +1,8 @@
 package com.rincew1nd.publictransportmap.Activities;
 
 import android.os.Bundle;
+import android.os.Environment;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
@@ -8,8 +10,14 @@ import android.preference.PreferenceManager;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.maps.android.MarkerManager;
+import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
+import com.rincew1nd.publictransportmap.MapElements.MapMarkerManager;
 import com.rincew1nd.publictransportmap.Models.Settings;
 import com.rincew1nd.publictransportmap.R;
+
+import java.io.File;
+import java.util.ArrayList;
 
 public class SettingsActivity extends PreferenceActivity {
 
@@ -44,11 +52,33 @@ public class SettingsActivity extends PreferenceActivity {
                     .setOnPreferenceChangeListener(this);
             getPreferenceManager().findPreference("algorithm_depth")
                     .setSummary(String.valueOf(Settings.SearchDepth));
+
+            SetupMapFile();
+        }
+
+        private void SetupMapFile() {
+            ArrayList<String> entries = new ArrayList<>();
+            File dir = new File(Environment.getExternalStorageDirectory() + File.separator + "transportmap");
+            for(File file: dir.listFiles())
+                entries.add(file.getName());
+
+            ListPreference mapfile =
+                    (ListPreference) getPreferenceManager().findPreference("map_file");
+            mapfile.setOnPreferenceChangeListener(this);
+            mapfile.setSummary(Settings.mapFilePath);
+            mapfile.setEntries(entries.toArray(new CharSequence[entries.size()]));
+            mapfile.setEntryValues(entries.toArray(new CharSequence[entries.size()]));
         }
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             switch (preference.getKey()) {
+                case "map_file":
+                    Settings.mapFilePath = (String) newValue;
+                    getPreferenceManager().findPreference("map_file").setSummary((String) newValue);
+                    GraphManager.GetInstance().LoadGraph();
+                    MapMarkerManager.GetInstance().SetUpMarkersAndPaths();
+                    break;
                 case "map_type":
                     int mapStyle = 0;
                     switch ((String) newValue) {
