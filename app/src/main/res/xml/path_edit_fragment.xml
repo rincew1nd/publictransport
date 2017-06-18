@@ -24,6 +24,9 @@
             android:dialogTitle="Введите соимость пересадки"
             android:inputType="number"/>
 
+        <Preference
+            android:key="path_action"/>
+
     </PreferenceCategory>
 
 </PreferenceScreen>

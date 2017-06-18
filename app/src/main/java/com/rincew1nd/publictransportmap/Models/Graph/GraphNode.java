@@ -48,7 +48,7 @@ public class GraphNode {
                 color = route.Color;
         if (color == null)
             color = "000000";
-        SetColor(color);
+        SetColor(GraphNodeType.Unscheduled, color);
         RouteId = station.RouteId;
         original = station;
     }
@@ -56,12 +56,17 @@ public class GraphNode {
     public GraphNode (TransportNode node, GraphNodeType type) {
         this(type, node.Id, node.Name, node.Lat, node.Lon);
         node.Type = type;
-        SetColor((node.Type == GraphNodeType.Walking) ? "FF0000" : "FF00FF");
+        SetColor(node.Type, "");
         original = node;
     }
 
-    public void SetColor(String color) {
-        NodeColor = Color.parseColor("#"+color);
+    public void SetColor(GraphNodeType type, String color) {
+        if (type == GraphNodeType.Walking)
+            NodeColor = Color.parseColor("#FF0000");
+        if (type == GraphNodeType.Scheduled)
+            NodeColor = Color.parseColor("#FF00FF");
+        if (type == GraphNodeType.Unscheduled)
+            NodeColor = Color.parseColor("#"+color);
     }
 
     @Override

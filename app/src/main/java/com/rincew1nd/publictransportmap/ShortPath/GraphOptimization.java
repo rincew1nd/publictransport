@@ -44,7 +44,7 @@ public class GraphOptimization {
 
                     GraphNode optimizedNode = new GraphNode(node.Type, maxId, "Optimized", node.Lat, node.Lon);
                     optimizedNode.RouteId = path.ToNode.RouteId;
-                    optimizedNode.SetColor("000000");
+                    optimizedNode.SetColor(optimizedNode.Type, "000000");
                     optimizedNode.OptimizedTime = path.Time + node.OptimizedTime;
 
                     GraphNode neighbourFromNode = GetNeighbourNodeExcept(path.FromNode, path.ToNode);

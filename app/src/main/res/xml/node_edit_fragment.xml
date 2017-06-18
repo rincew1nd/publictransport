@@ -26,6 +26,9 @@
             android:dialogTitle="Введите долготу"
             android:inputType="number"/>
 
+        <Preference
+            android:key="marker_action"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory

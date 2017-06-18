@@ -12,6 +12,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.rincew1nd.publictransportmap.Adapters.StationListAdapter;
 import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
 import com.rincew1nd.publictransportmap.Listeners.MapListeners;
 import com.rincew1nd.publictransportmap.MapElements.MapMarkerManager;
@@ -61,6 +62,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GraphManager.GetInstance().LoadGraph();
         MapMarkerManager.GetInstance().SetContextAndMap(this, mMap);
         MapMarkerManager.GetInstance().SetUpMarkersAndPaths();
+        StationListActivity.StationListAdapter =
+                new StationListAdapter(this, R.layout.station_list_item, R.id.station_list_text);
 
         // Move camera to center of Moscow
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(55.748700, 37.617365), 10));
@@ -79,10 +82,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 this.startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             case R.id.add_marker:
-                this.startActivity(new Intent(this, MarkerEditActivity.class));
+                this.startActivity(
+                    new Intent(this, MarkerEditActivity.class).putExtra("IsCreate", true)
+                );
                 return true;
             case R.id.add_path:
-                this.startActivity(new Intent(this, PathEditActivity.class));
+                this.startActivity(
+                    new Intent(this, PathEditActivity.class).putExtra("IsCreate", true)
+                );
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

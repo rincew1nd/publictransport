@@ -37,7 +37,7 @@ public class StationListAdapter extends ArrayAdapter<StationListItem>
         FillDataset(true);
     }
 
-    private void FillDataset(boolean clear) {
+    public void FillDataset(boolean clear) {
         if (clear) clear();
 
         AddUnscheduledTransport();

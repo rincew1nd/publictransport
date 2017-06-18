@@ -1,7 +1,5 @@
 package com.rincew1nd.publictransportmap.ShortPath;
 
-import android.util.Log;
-
 import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphPath;

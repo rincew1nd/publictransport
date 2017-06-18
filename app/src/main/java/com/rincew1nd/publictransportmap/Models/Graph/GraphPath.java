@@ -33,8 +33,8 @@ public class GraphPath {
     public GraphPath (GraphNodeType type, int from, int to, int time, int cost,
                       HashMap<Integer, GraphNode> graph) {
         Type = type;
-        FromNode = graph.get(from);
-        ToNode = graph.get(to);
+        FromNode = (from == -1) ? null : graph.get(from);
+        ToNode = (to == -1) ? null : graph.get(to);
 
         Time = time;
         Cost = cost;

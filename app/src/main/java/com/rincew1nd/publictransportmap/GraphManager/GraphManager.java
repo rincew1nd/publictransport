@@ -20,6 +20,8 @@ import com.rincew1nd.publictransportmap.Utils.FileOperations;
 import com.rincew1nd.publictransportmap.Utils.JsonSerializer;
 import com.rincew1nd.publictransportmap.R;
 
+import org.w3c.dom.Node;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,7 +55,7 @@ public class GraphManager {
     public void LoadGraph() {
         Nodes.clear();
         Paths.clear();
-        
+
         CheckDefaultMapFile();
         File file = new File(
                 Environment.getExternalStorageDirectory() + File.separator +
@@ -187,6 +189,15 @@ public class GraphManager {
             Log.d("NOT UNIQUE", String.format("%s(%d) - %s(%d)",
                 path.FromNode.Name, path.FromNode.Id, path.ToNode.Name, path.ToNode.Id)
             );
+    }
+
+    public int NextNodeId() {
+        int maxId = -1;
+        for (GraphNode node : Nodes.values())
+            if (maxId < node.Id)
+                maxId = node.Id;
+        maxId++;
+        return maxId;
     }
 
     private boolean IsUnique(GraphPath path) {

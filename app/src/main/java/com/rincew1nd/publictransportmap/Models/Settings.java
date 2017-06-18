@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import com.rincew1nd.publictransportmap.R;
 
 public class Settings {
+    public static int LastSelectedStation = -1;
     public static int FromStationId = -1;
     public static int ToStationId = -1;
 

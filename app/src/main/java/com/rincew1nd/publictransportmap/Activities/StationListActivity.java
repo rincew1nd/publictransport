@@ -14,6 +14,8 @@ import com.rincew1nd.publictransportmap.R;
 
 public class StationListActivity extends ListActivity implements View.OnClickListener {
 
+    public static StationListAdapter StationListAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +32,7 @@ public class StationListActivity extends ListActivity implements View.OnClickLis
     protected void onListItemClick(ListView l, View v, int position, long id) {
         StationListItem item = (StationListItem) getListView().getAdapter().getItem(position);
         if (item != null && item.type == StationListItem.ITEM) {
+            Settings.LastSelectedStation = item.id;
             if (Settings.FromStationSelect) {
                 Settings.FromStationId = item.id;
                 Settings.FromStationSelect = false;
@@ -38,8 +41,7 @@ public class StationListActivity extends ListActivity implements View.OnClickLis
                 Settings.ToStationId = item.id;
                 Settings.ToStationSelect = false;
             }
-            Intent returnIntent = new Intent();
-            setResult(2, returnIntent);
+            setResult(2, new Intent());
             finish();
         }
     }
@@ -48,7 +50,7 @@ public class StationListActivity extends ListActivity implements View.OnClickLis
     private void initializeAdapter() {
         getListView().setFastScrollEnabled(true);
         getListView().setFastScrollAlwaysVisible(true);
-        setListAdapter(new StationListAdapter(this, R.layout.station_list_item, R.id.station_list_text));
+        setListAdapter(StationListAdapter);
     }
 
     @Override
