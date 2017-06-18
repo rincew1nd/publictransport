@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.rincew1nd.publictransportmap.Activities.MapsActivity;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphNodeType;
@@ -16,14 +18,16 @@ import com.rincew1nd.publictransportmap.Models.Transfers.Transfer;
 import com.rincew1nd.publictransportmap.Models.Transport;
 import com.rincew1nd.publictransportmap.Models.TransportNode;
 import com.rincew1nd.publictransportmap.Models.Unscheduled.Station;
+import com.rincew1nd.publictransportmap.ShortPath.GraphOptimization;
 import com.rincew1nd.publictransportmap.Utils.FileOperations;
 import com.rincew1nd.publictransportmap.Utils.JsonSerializer;
 import com.rincew1nd.publictransportmap.R;
 
-import org.w3c.dom.Node;
-
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,12 +51,15 @@ public class GraphManager {
 
     private Context _context;
     public Transport TransportGraph;
+    private String _lastJsonFile;
 
     public HashMap<Integer, GraphNode> Nodes;
     public ArrayList<GraphPath> Paths;
 
     // Load markers from JSON file and generate icons
     public void LoadGraph() {
+        if (_lastJsonFile != null)
+            SaveToJson();
         Nodes.clear();
         Paths.clear();
 
@@ -64,11 +71,13 @@ public class GraphManager {
         TransportGraph = reader.constructUsingGson(Transport.class);
         LinkStructures();
         ProcessGraph();
+        GraphOptimization.GetInstance().OptimizeGraph(NextNodeId(GraphManager.GetInstance().Nodes));
+        _lastJsonFile = Settings.mapFilePath;
     }
 
     private void CheckDefaultMapFile() {
         File dir = new File(Environment.getExternalStorageDirectory() + File.separator + "transportmap");
-        File file = new File(dir, "transport.json");
+        File file = new File(dir, Settings.mapFilePath);
         if (!dir.exists())
             dir.mkdir();
         if (!file.exists())
@@ -80,6 +89,18 @@ public class GraphManager {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+    }
+
+    public void SaveToJson() {
+        File dir = new File(Environment.getExternalStorageDirectory() + File.separator + "transportmap");
+        File file = new File(dir, _lastJsonFile);
+        Gson gson = new GsonBuilder().create();
+        try {
+            FileOutputStream stream = new FileOutputStream(file);
+            String output = gson.toJson(TransportGraph);
+            stream.write(output.getBytes());
+            stream.close();
+        } catch (IOException ex) {}
     }
 
     private void LinkStructures() {
@@ -191,9 +212,9 @@ public class GraphManager {
             );
     }
 
-    public int NextNodeId() {
+    public int NextNodeId(HashMap<Integer, GraphNode> nodes) {
         int maxId = -1;
-        for (GraphNode node : Nodes.values())
+        for (GraphNode node : nodes.values())
             if (maxId < node.Id)
                 maxId = node.Id;
         maxId++;

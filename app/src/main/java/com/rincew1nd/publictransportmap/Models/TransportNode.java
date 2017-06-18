@@ -4,7 +4,7 @@ import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphNodeType;
 
 public class TransportNode {
-    public GraphNodeType Type;
+    public transient GraphNodeType Type;
     public Integer Id;
     public String Name;
     public Float Lat;

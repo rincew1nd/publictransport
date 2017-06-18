@@ -9,8 +9,8 @@ public class Path extends Transfer
 {
     public int RouteId;
     
-    public Station FromNode;
-    public Station ToNode;
+    public transient Station FromNode;
+    public transient Station ToNode;
 
     public Path() {}
     public Path(GraphPath path) {

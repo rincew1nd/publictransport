@@ -52,7 +52,7 @@ public class MarkerEditActivity extends PreferenceActivity {
             if (_node == null)
                 _node = new GraphNode(
                         GraphNodeType.None,
-                        GraphManager.GetInstance().NextNodeId(),
+                        GraphManager.GetInstance().NextNodeId(GraphManager.GetInstance().Nodes),
                         "", 0, 0
                 );
         }

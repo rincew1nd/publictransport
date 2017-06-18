@@ -9,5 +9,5 @@ public class Route {
     // TODO добавить поддержку цвета
     public String Color;
 
-    public HashMap<Integer, Trip> Trips = new HashMap<>();
+    public transient HashMap<Integer, Trip> Trips = new HashMap<>();
 }

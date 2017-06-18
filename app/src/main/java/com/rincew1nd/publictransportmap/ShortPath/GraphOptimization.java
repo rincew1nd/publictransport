@@ -12,8 +12,15 @@ import java.util.Map;
 
 public class GraphOptimization {
 
-    public HashMap<Integer, GraphNode> OptimizedNodes;
-    public HashSet<GraphPath> OptimizedPaths;
+    private static GraphOptimization _instance;
+    public static GraphOptimization GetInstance() {
+        if (_instance == null)
+            _instance = new GraphOptimization();
+        return _instance;
+    }
+
+    public HashMap<Integer, GraphNode> Nodes;
+    public HashSet<GraphPath> Paths;
 
     public void OptimizeGraph(int maxId) {
         Copy();
@@ -23,24 +30,21 @@ public class GraphOptimization {
 
     // Цикл оптимизации
     private boolean OptimizeCycle(int maxId) {
-        for (GraphNode node: OptimizedNodes.values())
+        for (GraphNode node: Nodes.values())
         {
             if (node.Paths.size() > 2 || !node.IsOptimizable)
                 continue;
-
-            if (node.Name.equals("Optimized"))
-                Log.d("", "");
 
             for (GraphPath path: node.Paths) {
                 if (CheckCriteria(path))
                 {
                     maxId++;
 
-                    if (OptimizedPaths.contains(path))  //TRUE
+                    if (Paths.contains(path))  //TRUE
                         Log.d("","");
-                    if (OptimizedPaths.remove(path))    //FALSE
+                    if (Paths.remove(path))    //FALSE
                         Log.d("","");
-                    OptimizedPaths.remove(GetPathToNode(path.ToNode, path.FromNode));
+                    Paths.remove(GetPathToNode(path.ToNode, path.FromNode));
 
                     GraphNode optimizedNode = new GraphNode(node.Type, maxId, "Optimized", node.Lat, node.Lon);
                     optimizedNode.RouteId = path.ToNode.RouteId;
@@ -86,9 +90,9 @@ public class GraphOptimization {
                     optimizedNode.OptimizedNodes.add(path.FromNode);
                     optimizedNode.OptimizedNodes.add(path.ToNode);
 
-                    OptimizedNodes.remove(path.FromNode.Id);
-                    OptimizedNodes.remove(path.ToNode.Id);
-                    OptimizedNodes.put(maxId, optimizedNode);
+                    Nodes.remove(path.FromNode.Id);
+                    Nodes.remove(path.ToNode.Id);
+                    Nodes.put(maxId, optimizedNode);
 
                     return true;
                 }
@@ -121,6 +125,9 @@ public class GraphOptimization {
             if (path.FromNode.Paths.size() > 2 || path.ToNode.Paths.size() > 2)
                 return false;
 
+            if (!path.ToNode.IsOptimizable)
+                return false;
+
             int routeId = path.ToNode.RouteId;
             for (GraphPath nPath: path.ToNode.Paths)
                 if (nPath.ToNode.RouteId != routeId)
@@ -135,7 +142,7 @@ public class GraphOptimization {
             return false;
     }
 
-    public void Copy() {
+    private void Copy() {
         HashMap<Integer, GraphNode> copiedNodes = new HashMap<>();
         HashSet<GraphPath> copiedPaths = new HashSet<>();
 
@@ -159,61 +166,92 @@ public class GraphOptimization {
         for (GraphPath path: copiedPaths)
             path.FromNode.Paths.add(path);
 
-        OptimizedNodes = copiedNodes;
-        OptimizedPaths = copiedPaths;
+        Nodes = copiedNodes;
+        Paths = copiedPaths;
     }
 
-//    // Востановить оптимизированную ноду
-//    private void RecoverOptimizedNodes(HashMap<Integer, GraphNode> graph, int fromNode, int toNode) {
-//        boolean fromNodeExist = false;
-//        boolean toNodeExist = false;
-//        for (GraphNode node : graph.values()) {
-//            if (node.Id == fromNode)
-//                fromNodeExist = true;
-//            if (node.Id == toNode)
-//                toNodeExist = true;
-//        }
-//        try {
-//            if (!fromNodeExist)
-//                SplitOptimizedNodes(graph, fromNode);
-//            if (!toNodeExist)
-//                SplitOptimizedNodes(graph, toNode);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public void RecoverOptimizedNodes(int fromNode, int toNode) {
+        Nodes.clear();
+        Paths.clear();
+
+        Copy();
+        for (GraphNode nodes: Nodes.values())
+            nodes.IsOptimizable = true;
+        Nodes.get(fromNode).IsOptimizable = false;
+        Nodes.get(toNode).IsOptimizable = false;
+
+        OptimizeCycle(GraphManager.GetInstance().NextNodeId(GraphManager.GetInstance().Nodes));
+    }
+
+    // Востановить оптимизированную ноду
+    //public void RecoverOptimizedNodes(int fromNode, int toNode) {
+    //    boolean fromNodeExist = false;
+    //    boolean toNodeExist = false;
+    //    for (GraphNode node : Nodes.values()) {
+    //        if (node.Id == fromNode)
+    //            fromNodeExist = true;
+    //        if (node.Id == toNode)
+    //            toNodeExist = true;
+    //    }
+    //    try {
+    //        if (!fromNodeExist)
+    //            SplitOptimizedNodes(fromNode);
+    //        if (!toNodeExist)
+    //            SplitOptimizedNodes(toNode);
+    //    } catch (Exception e) {
+    //        e.printStackTrace();
+    //    }
 //
-//    // Разбить оптимизированную ноду
-//    private void SplitOptimizedNodes(HashMap<Integer, GraphNode> graph, int nodeId) throws Exception {
-//        GraphNode optimizedNode = null;
-//        for (GraphNode node: graph.values())
-//            if (node.OptimizedNodes.contains(nodeId))
-//                optimizedNode = node;
+    //    for (GraphNode nodes: Nodes.values())
+    //        nodes.IsOptimizable = true;
+    //    Nodes.get(fromNode).IsOptimizable = false;
+    //    Nodes.get(toNode).IsOptimizable = false;
 //
-//        if (optimizedNode == null)
-//            throw new Exception("Station not finded");
+    //    OptimizeCycle(GraphManager.GetInstance().NextNodeId(Nodes));
+    //}
 //
-//        for (GraphNode neededNodeId: optimizedNode.OptimizedNodes)
-//            if (_graphNodes.containsKey(neededNodeId))
-//                graph.put(neededNodeId, _graphNodes.get(neededNodeId));
+    //// Разбить оптимизированную ноду
+    //private void SplitOptimizedNodes(int nodeId) throws Exception {
 //
-//        // По всем путям оптимизированной ноды
-//        for (GraphPath path: optimizedNode.Paths) {
-//            // По всем путям ноды смежной с оптимизированной нодой
-//            for (GraphPath optimizedPath: path.ToNode.Paths) {
-//                // Если путь до оптимизированной ноды
-//                if (optimizedPath.ToNode.Id == optimizedNode.Id) {
-//                    // Получить старый путь
-//                    GraphPath oldGraphPath = null;
-//                    GraphNode oldGraphNode = _graphNodes.get(path.ToNode.Id);
-//                    for (GraphPath oldPath: oldGraphNode.Paths)
-//                        if (optimizedNode.OptimizedNodes.contains(oldPath.ToNode.Id))
-//                            oldGraphPath = oldPath;
-//                    path.ToNode.Paths.remove(optimizedPath);
-//                    path.ToNode.Paths.add(oldGraphPath);
-//                }
-//            }
-//        }
-//        graph.remove(optimizedNode.Id);
-//    }
+    //    // Получить оптимизированную ноду в которой находится искомая нода
+    //    GraphNode optimizedNode = null;
+    //    for (GraphNode node: Nodes.values())
+    //        for (GraphNode node1 : node.OptimizedNodes)
+    //            if (node1.Id == nodeId)
+    //                optimizedNode = node;
+//
+    //    // Если нода не была найдена - упасть
+    //    if (optimizedNode == null)
+    //        throw new Exception("Station not found");
+//
+    //    // Удалить оптимизированную ноду из графа
+    //    Nodes.remove(optimizedNode.Id);
+    //    // Добавить все ноды оптимизированной ноды в граф
+    //    for (GraphNode origNode: optimizedNode.OptimizedNodes)
+    //        if (origNode.OptimizedNodes.size() == 0)
+    //            Nodes.put(origNode.Id, origNode);
+//
+    //    // Востановить оригинальные пути
+    //    for (GraphPath path: optimizedNode.Paths) {
+    //        RestoreOriginalNodePaths(path.ToNode);
+    //    }
+    //    for (GraphNode node : optimizedNode.OptimizedNodes) {
+    //        RestoreOriginalNodePaths(node);
+    //    }
+    //}
+//
+    //private void RestoreOriginalNodePaths(GraphNode node) {
+    //    GraphManager gm = GraphManager.GetInstance();
+//
+    //    node.OptimizedNodes.clear();
+    //    node.Paths.clear();
+//
+    //    for (GraphPath path : gm.Nodes.get(node.Id).Paths) {
+    //        GraphPath copiedPath = new GraphPath(path.Type, path.FromNode.Id, path.ToNode.Id,
+    //                path.Time, path.Cost, Nodes);
+    //        copiedPath.PathColor = path.PathColor;
+    //        copiedPath.Width = path.Width;
+    //        node.Paths.add(copiedPath);
+    //    }
+    //}
 }

@@ -7,8 +7,7 @@ public class Trip{
     public int RouteId;
     public int CalendarId;
 
-    public Route Route;
-    public Calendar Calendar;
-
-    public ArrayList<StopTime> StopTimes = new ArrayList<>();
+    public transient Route Route;
+    public transient Calendar Calendar;
+    public transient ArrayList<StopTime> StopTimes = new ArrayList<>();
 }

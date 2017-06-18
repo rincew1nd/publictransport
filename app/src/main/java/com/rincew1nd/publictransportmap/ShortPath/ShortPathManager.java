@@ -1,5 +1,7 @@
 package com.rincew1nd.publictransportmap.ShortPath;
 
+import android.util.Log;
+
 import com.rincew1nd.publictransportmap.GraphManager.GraphManager;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphNode;
 import com.rincew1nd.publictransportmap.Models.Graph.GraphPath;
@@ -14,20 +16,19 @@ public class ShortPathManager {
 
     private GraphNode _toNode;
     private ArrayList<ShortestPathObj> _algorithmResult;
+    private int lolol = 0;
 
     public static ShortPathManager GetInstance() {
         if (_instance == null)
             _instance = new ShortPathManager();
         return _instance;
     }
-    private ShortPathManager() {
-        //OptimizeGraph(maxId);
-    }
+    private ShortPathManager() {}
 
     public ArrayList<ShortestPathObj> FindShortestPaths() {
         _algorithmResult = new ArrayList<>();
 
-        //RecoverOptimizedNodes(algorithmReadyGraph, fromNodeId, toNodeId);
+        GraphOptimization.GetInstance().RecoverOptimizedNodes(Settings.FromStationId,Settings.ToStationId);
 
         GraphNode _fromNode = GraphManager.GetInstance().Nodes.get(Settings.FromStationId);
         _toNode = GraphManager.GetInstance().Nodes.get(Settings.ToStationId);
@@ -68,6 +69,13 @@ public class ShortPathManager {
             // не пересаживаться на ушедшие поезда
             //if (lastPath != null && lastPath.Delay != 0 && gPath.Delay != 0 && lastPath.Delay > gPath.Delay)
             //    continue;
+            StringBuilder lol = new StringBuilder();
+            for (int i = 0; i < lolol; i++)
+                lol.append("---|");
+            lol.append(gPath.FromNode.Name);
+            lol.append("--");
+            lol.append(gPath.ToNode.Name);
+            Log.d("test", lol.toString());
 
             ArrayList newPath = new ArrayList<>(path);
             if (gPath.ToNode.OptimizedNodes.size() > 0)

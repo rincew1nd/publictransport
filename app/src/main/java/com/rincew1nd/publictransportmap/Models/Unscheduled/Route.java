@@ -7,9 +7,8 @@ public class Route {
     public int Id;
     public String Name;
     public List<Delay> Delay;
-    public String WikiPage;
     public String Color;
 
-    public HashMap<Integer, Station> Stations = new HashMap<>();
+    public transient HashMap<Integer, Station> Stations = new HashMap<>();
 }
 

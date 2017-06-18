@@ -5,8 +5,8 @@ import com.rincew1nd.publictransportmap.Models.Transfers.Transfer;
 import com.rincew1nd.publictransportmap.Models.TransportNode;
 
 public class Path extends Transfer {
-    public TransportNode FromNode;
-    public TransportNode ToNode;
+    public transient TransportNode FromNode;
+    public transient TransportNode ToNode;
 
     public Path() {}
     public Path(GraphPath path) {

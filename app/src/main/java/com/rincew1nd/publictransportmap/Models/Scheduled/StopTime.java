@@ -11,7 +11,7 @@ public class StopTime implements Comparable<StopTime>{
     public int DepartureTime;
     public int ArrivalTime;
 
-    public TransportNode Stop;
+    public transient TransportNode Stop;
 
     @Override
     public int compareTo(@NonNull StopTime o) {

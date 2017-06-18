@@ -15,12 +15,12 @@ public class Settings {
 
     public static int SearchDepth;
     public static int MapStyleResourceId;
-    public static String mapFilePath = "test_map.json";
+    public static String mapFilePath = "transport.json";
 
     public static void LoadSettings(Context context) {
         SearchDepth = Integer.parseInt(
                 PreferenceManager.getDefaultSharedPreferences(context)
-                        .getString("algorithm_depth", "2"));
+                        .getString("algorithm_depth", "1"));
         MapStyleResourceId =
                 PreferenceManager.getDefaultSharedPreferences(context)
                         .getInt("map_style_id", R.raw.map_style);
